@@ -2,69 +2,73 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-body">
+<body class="cuerpo-auth">
 
-    <div class="auth-container">
-        <div class="pane info-side">
-            <div class="info-content">
-                <div class="info-icon">
+    <main class="contenedor-auth">
+        <section class="panel lado-info">
+            <div class="contenido-info">
+                <div class="icono-info">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
                 </div>
-                <h2 class="info-title">Bienvenido</h2>
-                <p class="info-text">
+                <h2 class="titulo-info">Bienvenido</h2>
+                <p class="texto-info">
                     La plataforma que centraliza y simplifica el acceso a eventos universitarios.
                 </p>
-                <div style="width: 50px; height: 4px; background: var(--accent-gold); margin: 20px auto; border-radius: 2px;"></div>
+                <div style="width: 50px; height: 4px; background: var(--acento-dorado); margin: 20px auto; border-radius: 2px;"></div>
             </div>
-        </div>
+        </section>
 
-        <div class="pane form-side">
-            <div class="logo">
+        <section class="panel lado-formulario">
+            <div class="logotipo">
                 <img src="assets/logo.png" alt="Logotipo">
             </div>
 
-            <label>Tipo usuario</label>
-            <div class="user-toggle">
-                <input type="radio" id="role-exp" name="role" checked>
-                <label for="role-exp" class="toggle-btn">Explorador</label>
-                
-                <input type="radio" id="role-man" name="role">
-                <label for="role-man" class="toggle-btn">Manager</label>
-            </div>
+            <fieldset style="border:none; padding:0; margin:0;">
+                <legend style="display:none;">Selección de rol</legend>
+                <label>Tipo usuario</label>
+                <div class="selector-usuario">
+                    <input type="radio" id="role-exp" name="role" checked>
+                    <label for="role-exp" class="btn-selector">Explorador</label>
+                    
+                    <input type="radio" id="role-man" name="role">
+                    <label for="role-man" class="btn-selector">Manager</label>
+                </div>
+            </fieldset>
 
             <form action="index.html" style="width: 100%;">
-                <div class="form-group">
-                    <label>Correo electrónico</label>
-                    <input type="email" placeholder="ejemplo@universidad.edu" required>
+                <div class="grupo-formulario">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" placeholder="ejemplo@universidad.edu" required>
                 </div>
-                <div class="form-group">
-                    <label>Contraseña</label>
-                    <input type="password" placeholder="••••••••" required>
+                <div class="grupo-formulario">
+                    <label for="password">Contraseña</label>
+                    <input type="password" id="password" placeholder="••••••••" required>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; font-size:0.9rem; color: var(--text-muted); margin-bottom:30px; align-items:center;">
-                    <label style="display:inline-flex; gap:8px; color:var(--text-muted); margin:0; align-items:center; cursor:pointer;">
+                <div style="display:flex; justify-content:space-between; font-size:0.9rem; color: var(--texto-tenue); margin-bottom:30px; align-items:center;">
+                    <label style="display:inline-flex; gap:8px; color:var(--texto-tenue); margin:0; align-items:center; cursor:pointer;">
                         <input type="checkbox" style="width:auto; margin:0;"> Recordarme
                     </label>
-                    <a href="#" style="color:var(--text-white); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+                    <a href="#" style="color:var(--texto-blanco); text-decoration: none;">¿Olvidaste tu contraseña?</a>
                 </div>
 
-                <button type="submit" class="btn-primary">Iniciar Sesión</button>
+                <button type="submit" class="btn-primario">Iniciar Sesión</button>
             </form>
 
-            <div class="divider">
+            <div class="divisor">
                 <span>o</span>
             </div>
 
             <div style="text-align: center; width: 100%;">
-                <p style="color: var(--text-muted); font-size: 1rem;">¿No tienes una cuenta?</p>
-                <a href="register.html" class="btn-outline">Crear cuenta</a>
+                <p style="color: var(--texto-tenue); font-size: 1rem;">¿No tienes una cuenta?</p>
+                <a href="register.html" class="btn-borde">Crear cuenta</a>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
 </body>
 </html>

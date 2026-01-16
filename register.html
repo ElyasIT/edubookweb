@@ -2,85 +2,89 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crear Cuenta</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="auth-body register-page">
+<body class="cuerpo-auth pagina-registro">
 
-    <div class="auth-container">
-        <div class="pane form-side">
-            <div class="logo">
+    <main class="contenedor-auth">
+        <section class="panel lado-formulario">
+            <div class="logotipo">
                 <img src="assets/logo.png" alt="Logotipo">
             </div>
 
-            <label>Tipo usuario</label>
-            <div class="user-toggle">
-                <input type="radio" id="role-exp" name="role" checked>
-                <label for="role-exp" class="toggle-btn">Explorador</label>
+            <fieldset style="border:none; padding:0; margin:0;">
+                <legend style="display:none;">Selección de rol</legend>
+                <label>Tipo usuario</label>
+                <div class="selector-usuario">
+                    <input type="radio" id="role-exp" name="role" checked>
+                    <label for="role-exp" class="btn-selector">Explorador</label>
 
-                <input type="radio" id="role-man" name="role">
-                <label for="role-man" class="toggle-btn">Manager</label>
-            </div>
+                    <input type="radio" id="role-man" name="role">
+                    <label for="role-man" class="btn-selector">Manager</label>
+                </div>
+            </fieldset>
 
             <form action="login.html" style="width: 100%;">
-                <div class="form-group">
-                    <label>Nombre completo</label>
-                    <input type="text" required>
+                <div class="grupo-formulario">
+                    <label for="name">Nombre completo</label>
+                    <input type="text" id="name" required>
                 </div>
-                <div class="form-group">
-                    <label>Correo electrónico</label>
-                    <input type="email" required>
+                <div class="grupo-formulario">
+                    <label for="email">Correo electrónico</label>
+                    <input type="email" id="email" required>
                 </div>
-                <div class="form-group">
-                    <label>Tu universidad / Centro</label>
-                    <input type="text">
+                <div class="grupo-formulario">
+                    <label for="uni">Tu universidad / Centro</label>
+                    <input type="text" id="uni">
                 </div>
-                <div class="form-group">
-                    <label>Contraseña (Mínimo 8 caracteres)</label>
-                    <input type="password" minlength="8" required>
+                <div class="grupo-formulario">
+                    <label for="pass">Contraseña (Mínimo 8 caracteres)</label>
+                    <input type="password" id="pass" minlength="8" required>
                 </div>
-                <div class="form-group">
-                    <label>Confirma tu contraseña</label>
-                    <input type="password" required>
+                <div class="grupo-formulario">
+                    <label for="pass-confirm">Confirma tu contraseña</label>
+                    <input type="password" id="pass-confirm" required>
                 </div>
 
                 <div style="margin-bottom:30px;">
-                     <label style="display:flex; gap:10px; font-size:0.9rem; color:var(--text-muted); align-items:flex-start; cursor:pointer;">
+                     <label style="display:flex; gap:10px; font-size:0.9rem; color:var(--texto-tenue); align-items:flex-start; cursor:pointer;">
                         <input type="checkbox" style="width:auto; margin-top:3px;" required> 
                         Acepto los términos y condiciones y la política de privacidad
                     </label>
                 </div>
 
-                <button type="submit" class="btn-primary">Crear cuenta</button>
+                <button type="submit" class="btn-primario">Crear cuenta</button>
             </form>
 
-            <div class="divider">
+            <div class="divisor">
                 <span>o</span>
             </div>
 
             <div style="text-align: center; width: 100%;">
-                <p style="color: var(--text-muted); font-size: 1rem;">¿Ya tienes una cuenta?</p>
-                <a href="login.html" class="btn-outline">Iniciar sesión</a>
+                <p style="color: var(--texto-tenue); font-size: 1rem;">¿Ya tienes una cuenta?</p>
+                <a href="login.html" class="btn-borde">Iniciar sesión</a>
             </div>
-        </div>
+        </section>
 
-        <div class="pane info-side">
-            <div class="info-content">
-                <div class="info-icon">
+        <section class="panel lado-info">
+            <div class="contenido-info">
+                <div class="icono-info">
                     <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
                 </div>
-                <h2 class="info-title">Únete a la comunidad</h2>
+                <h2 class="titulo-info">Únete a la comunidad</h2>
                 
                 <div style="text-align: left; margin-top: 30px;">
-                    <p class="info-text" style="margin-bottom: 25px;"><strong>Para Estudiantes:</strong><br>
+                    <p class="texto-info" style="margin-bottom: 25px;"><strong>Para Estudiantes:</strong><br>
                     Explora eventos, filtra por temas de interés y recibe notificaciones.</p>
                     
-                    <p class="info-text"><strong>Para Universidades:</strong><br>
+                    <p class="texto-info"><strong>Para Universidades:</strong><br>
                     Gestiona y promociona tus charlas y talleres.</p>
                 </div>
             </div>
-        </div>
-    </div>
+        </section>
+    </main>
 
 </body>
 </html>

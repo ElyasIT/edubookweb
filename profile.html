@@ -2,107 +2,109 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mi Perfil</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <div class="dashboard-layout">
-        <aside class="sidebar">
-            <a href="index.html" class="logo">
+    <div class="diseno-panel">
+        <aside class="barra-lateral">
+            <a href="index.html" class="logotipo">
                 <img src="assets/logo.png" alt="Logotipo">
             </a>
             
-            <div style="font-size: 0.8rem; color: var(--text-muted); text-align:center; margin-top:-10px; margin-bottom: 20px;">Modo Explorador</div>
+            <div class="modo-selector" style="font-size: 0.8rem; color: var(--texto-tenue); text-align:center; margin-top:-10px; margin-bottom: 20px;">Modo Explorador</div>
 
-            <nav class="nav-menu">
-                <a href="index.html" class="nav-item">
+            <nav class="menu-nav">
+                <a href="index.html" class="item-nav">
                      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path><polyline points="9 22 9 12 15 12 15 22"></polyline></svg> Inicio
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="item-nav">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg> Buscar
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="item-nav">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg> Calendario
                 </a>
-                <a href="#" class="nav-item">
+                <a href="#" class="item-nav">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path></svg> Favoritos
                 </a>
-                <a href="profile.html" class="nav-item active">
+                <a href="profile.html" class="item-nav activo">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> Perfil
-                </a>
-                <a href="#" class="nav-item">
-                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"></path></svg> Configuración
                 </a>
             </nav>
             <div style="margin-top: auto;">
-                 <a href="login.html" class="nav-item">
+                 <a href="login.html" class="item-nav">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
                     Cerrar sesión
                 </a>
             </div>
         </aside>
 
-        <main class="main-content">
+        <main class="contenido-principal">
             <h2 style="margin-bottom:20px;">Mi Perfil</h2>
 
-            <div class="profile-header">
-                <div class="avatar-large">JP</div>
+            <section class="encabezado-perfil">
+                <div class="avatar-grande">JP</div>
                 <div style="flex:1;">
                     <h2>Juan Pérez</h2>
-                    <p class="text-gold">Estudiante • Universidad Politécnica</p>
+                    <p class="texto-dorado">Estudiante • Universidad Politécnica</p>
                 </div>
                 <div>
-                    <button class="btn-primary" style="width:auto; padding: 10px 20px;">Editar</button>
-                    <button class="btn-outline" style="width:auto; display:inline-block; margin-top:0; padding: 10px 20px;">Foto</button>
+                    <button class="btn-primario" style="width:auto; padding: 10px 20px;">Editar</button>
+                    <button class="btn-borde" style="width:auto; display:inline-block; margin-top:0; padding: 10px 20px;">Foto</button>
                 </div>
-            </div>
+            </section>
 
-            <h3 style="margin-bottom:15px;">Estadísticas</h3>
-            <div class="stats-grid">
-                <div class="stat-box">
-                    <img src="assets/calendario.png" class="stat-icon" alt="Calendario">
-                    <h3 class="text-gold">12</h3>
-                    <p style="color:var(--text-muted)">Eventos</p>
+            <section aria-label="Estadísticas">
+                <h3 style="margin-bottom:15px;">Estadísticas</h3>
+                <div class="cuadricula-estadisticas">
+                    <div class="caja-estadistica">
+                        <img src="assets/calendario.png" class="icono-estadistica" alt="Calendario">
+                        <h3 class="texto-dorado">12</h3>
+                        <p style="color:var(--texto-tenue)">Eventos</p>
+                    </div>
+                    <div class="caja-estadistica">
+                        <img src="assets/estrella.png" class="icono-estadistica" alt="Favoritos">
+                        <h3 class="texto-dorado">5</h3>
+                        <p style="color:var(--texto-tenue)">Favoritos</p>
+                    </div>
+                    <div class="caja-estadistica">
+                        <img src="assets/birrete.png" class="icono-estadistica" alt="Talleres">
+                        <h3 class="texto-dorado">2</h3>
+                        <p style="color:var(--texto-tenue)">Talleres</p>
+                    </div>
+                    <div class="caja-estadistica">
+                        <img src="assets/tick.png" class="icono-estadistica" alt="Estado">
+                        <h3 class="texto-dorado">Active</h3>
+                        <p style="color:var(--texto-tenue)">Estado</p>
+                    </div>
                 </div>
-                <div class="stat-box">
-                    <img src="assets/estrella.png" class="stat-icon" alt="Favoritos">
-                    <h3 class="text-gold">5</h3>
-                    <p style="color:var(--text-muted)">Favoritos</p>
-                </div>
-                <div class="stat-box">
-                    <img src="assets/birrete.png" class="stat-icon" alt="Talleres">
-                    <h3 class="text-gold">2</h3>
-                    <p style="color:var(--text-muted)">Talleres</p>
-                </div>
-                <div class="stat-box">
-                    <img src="assets/tick.png" class="stat-icon" alt="Estado">
-                    <h3 class="text-gold">Active</h3>
-                    <p style="color:var(--text-muted)">Estado</p>
-                </div>
-            </div>
+            </section>
 
-            <h3 style="margin-bottom:15px;">Información personal</h3>
-            <div style="background:var(--bg-panel); border:1px solid var(--border-color); padding:30px; border-radius:8px;">
-                <div class="form-grid">
-                    <div>
-                        <label>Nombre completo</label>
-                        <input type="text" value="Juan Pérez" readonly>
-                    </div>
-                    <div>
-                        <label>Correo electrónico</label>
-                        <input type="text" value="juan.perez@upc.edu" readonly>
-                    </div>
-                    <div>
-                        <label>Teléfono</label>
-                        <input type="text" value="+34 600 000 000">
-                    </div>
-                    <div>
-                        <label>Universidad</label>
-                        <input type="text" value="UPC Barcelona">
+            <section aria-label="Información Personal">
+                <h3 style="margin-bottom:15px;">Información personal</h3>
+                <div style="background:var(--bg-panel); border:1px solid var(--color-borde); padding:30px; border-radius:8px;">
+                    <div class="cuadricula-formulario">
+                        <div>
+                            <label for="fname">Nombre completo</label>
+                            <input type="text" id="fname" value="Juan Pérez" readonly>
+                        </div>
+                        <div>
+                            <label for="email">Correo electrónico</label>
+                            <input type="text" id="email" value="juan.perez@upc.edu" readonly>
+                        </div>
+                        <div>
+                            <label for="phone">Teléfono</label>
+                            <input type="text" id="phone" value="+34 600 000 000">
+                        </div>
+                        <div>
+                            <label for="uni">Universidad</label>
+                            <input type="text" id="uni" value="UPC Barcelona">
+                        </div>
                     </div>
                 </div>
-            </div>
+            </section>
         </main>
     </div>
 </body>
