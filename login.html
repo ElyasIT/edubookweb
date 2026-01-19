@@ -3,70 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Iniciar Sesión</title>
+    <title>Iniciar Sesión - EduBook</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="cuerpo-auth">
 
     <main class="contenedor-auth">
+        
         <section class="panel lado-info">
             <div class="contenido-info">
-                <div class="icono-info">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+                <div class="icono-grande">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
                 </div>
-                <h2 class="titulo-info">Bienvenido</h2>
-                <p class="texto-info">
+                <h2 class="titulo-bienvenida">Bienvenido</h2>
+                <p class="texto-descriptivo">
                     La plataforma que centraliza y simplifica el acceso a eventos universitarios.
                 </p>
-                <div style="width: 50px; height: 4px; background: var(--acento-dorado); margin: 20px auto; border-radius: 2px;"></div>
+                <div class="linea-decorativa"></div>
             </div>
         </section>
 
         <section class="panel lado-formulario">
-            <div class="logotipo">
-                <img src="assets/logo.png" alt="Logotipo">
+            
+            <div class="caja-logo">
+                <img src="assets/logo.png" alt="Logotipo EduBook" class="img-logo">
             </div>
 
-            <fieldset style="border:none; padding:0; margin:0;">
-                <legend style="display:none;">Selección de rol</legend>
-                <label>Tipo usuario</label>
-                <div class="selector-usuario">
-                    <input type="radio" id="role-exp" name="role" checked>
-                    <label for="role-exp" class="btn-selector">Explorador</label>
+            <form action="index.html" class="formulario-login">
+                
+                <div class="grupo-rol">
+                    <label>Tipo de usuario</label>
                     
-                    <input type="radio" id="role-man" name="role">
-                    <label for="role-man" class="btn-selector">Manager</label>
-                </div>
-            </fieldset>
+                    <div class="opciones-rol">
+                        <input type="radio" id="rol-explorador-l" name="rol" value="explorador" checked>
+                        <label for="rol-explorador-l" class="caja-rol">Explorador</label>
 
-            <form action="index.html" style="width: 100%;">
-                <div class="grupo-formulario">
-                    <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" placeholder="ejemplo@universidad.edu" required>
-                </div>
-                <div class="grupo-formulario">
-                    <label for="password">Contraseña</label>
-                    <input type="password" id="password" placeholder="••••••••" required>
+                        <input type="radio" id="rol-manager-l" name="rol" value="manager">
+                        <label for="rol-manager-l" class="caja-rol">Manager</label>
+                    </div>
                 </div>
 
-                <div style="display:flex; justify-content:space-between; font-size:0.9rem; color: var(--texto-tenue); margin-bottom:30px; align-items:center;">
-                    <label style="display:inline-flex; gap:8px; color:var(--texto-tenue); margin:0; align-items:center; cursor:pointer;">
-                        <input type="checkbox" style="width:auto; margin:0;"> Recordarme
+                <div class="grupo-input">
+                    <label for="email-l">Correo electrónico</label>
+                    <input type="email" id="email-l" placeholder="ejemplo@universidad.edu" required>
+                </div>
+
+                <div class="grupo-input">
+                    <label for="password-l">Contraseña</label>
+                    <input type="password" id="password-l" placeholder="••••••••" required>
+                </div>
+
+                <div class="opciones-extra">
+                    <label style="display:flex; align-items:center; gap:5px; cursor:pointer;">
+                        <input type="checkbox"> Recordarme
                     </label>
-                    <a href="#" style="color:var(--texto-blanco); text-decoration: none;">¿Olvidaste tu contraseña?</a>
+                    <a href="#" class="enlace-olvido">¿Olvidaste tu contraseña?</a>
                 </div>
 
-                <button type="submit" class="btn-primario">Iniciar Sesión</button>
+                <button type="submit" class="btn-principal">Iniciar Sesión</button>
             </form>
 
             <div class="divisor">
                 <span>o</span>
             </div>
 
-            <div style="text-align: center; width: 100%;">
-                <p style="color: var(--texto-tenue); font-size: 1rem;">¿No tienes una cuenta?</p>
-                <a href="register.html" class="btn-borde">Crear cuenta</a>
+            <div class="pie-form">
+                <p style="margin-bottom: 10px;">¿No tienes una cuenta?</p>
+                <a href="register.html" class="btn-secundario">Crear cuenta</a>
             </div>
+
         </section>
     </main>
 

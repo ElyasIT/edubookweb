@@ -3,87 +3,96 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crear Cuenta</title>
+    <title>Crear Cuenta - EduBook</title>
     <link rel="stylesheet" href="style.css">
 </head>
-<body class="cuerpo-auth pagina-registro">
+<body class="cuerpo-auth">
 
     <main class="contenedor-auth">
+        
         <section class="panel lado-formulario">
-            <div class="logotipo">
-                <img src="assets/logo.png" alt="Logotipo">
+            
+            <div class="caja-logo">
+                <img src="assets/logo.png" alt="Logotipo EduBook" class="img-logo">
             </div>
 
-            <fieldset style="border:none; padding:0; margin:0;">
-                <legend style="display:none;">Selección de rol</legend>
-                <label>Tipo usuario</label>
-                <div class="selector-usuario">
-                    <input type="radio" id="role-exp" name="role" checked>
-                    <label for="role-exp" class="btn-selector">Explorador</label>
+            <form action="login.html" class="formulario-login">
+                
+                <div class="grupo-rol">
+                    <label>Tipo de usuario</label>
+                    
+                    <div class="opciones-rol">
+                        <input type="radio" id="rol-explorador" name="rol" value="explorador" checked>
+                        <label for="rol-explorador" class="caja-rol">Explorador</label>
 
-                    <input type="radio" id="role-man" name="role">
-                    <label for="role-man" class="btn-selector">Manager</label>
+                        <input type="radio" id="rol-manager" name="rol" value="manager">
+                        <label for="rol-manager" class="caja-rol">Manager</label>
+                    </div>
                 </div>
-            </fieldset>
 
-            <form action="login.html" style="width: 100%;">
-                <div class="grupo-formulario">
+                <div class="grupo-input">
                     <label for="name">Nombre completo</label>
                     <input type="text" id="name" required>
                 </div>
-                <div class="grupo-formulario">
+
+                <div class="grupo-input">
                     <label for="email">Correo electrónico</label>
                     <input type="email" id="email" required>
                 </div>
-                <div class="grupo-formulario">
+
+                <div class="grupo-input">
                     <label for="uni">Tu universidad / Centro</label>
                     <input type="text" id="uni">
                 </div>
-                <div class="grupo-formulario">
+
+                <div class="grupo-input">
                     <label for="pass">Contraseña (Mínimo 8 caracteres)</label>
                     <input type="password" id="pass" minlength="8" required>
                 </div>
-                <div class="grupo-formulario">
+
+                <div class="grupo-input">
                     <label for="pass-confirm">Confirma tu contraseña</label>
                     <input type="password" id="pass-confirm" required>
                 </div>
 
-                <div style="margin-bottom:30px;">
-                     <label style="display:flex; gap:10px; font-size:0.9rem; color:var(--texto-tenue); align-items:flex-start; cursor:pointer;">
-                        <input type="checkbox" style="width:auto; margin-top:3px;" required> 
-                        Acepto los términos y condiciones y la política de privacidad
-                    </label>
-                </div>
+                <label class="checkbox-terminos">
+                    <input type="checkbox" required> 
+                    <span>Acepto los términos y condiciones y la política de privacidad</span>
+                </label>
 
-                <button type="submit" class="btn-primario">Crear cuenta</button>
+                <button type="submit" class="btn-principal">Crear cuenta</button>
             </form>
 
             <div class="divisor">
                 <span>o</span>
             </div>
 
-            <div style="text-align: center; width: 100%;">
-                <p style="color: var(--texto-tenue); font-size: 1rem;">¿Ya tienes una cuenta?</p>
-                <a href="login.html" class="btn-borde">Iniciar sesión</a>
+            <div class="pie-form">
+                <p style="margin-bottom: 10px;">¿Ya tienes una cuenta?</p>
+                <a href="login.html" class="btn-secundario">Iniciar sesión</a>
             </div>
+
         </section>
 
         <section class="panel lado-info">
             <div class="contenido-info">
-                <div class="icono-info">
-                    <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+                <div class="icono-grande">
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                 </div>
-                <h2 class="titulo-info">Únete a la comunidad</h2>
+                <h2 class="titulo-bienvenida">Únete a la comunidad</h2>
                 
-                <div style="text-align: left; margin-top: 30px;">
-                    <p class="texto-info" style="margin-bottom: 25px;"><strong>Para Estudiantes:</strong><br>
+                <div class="bloque-texto">
+                    <p><strong>Para Estudiantes:</strong><br>
                     Explora eventos, filtra por temas de interés y recibe notificaciones.</p>
-                    
-                    <p class="texto-info"><strong>Para Universidades:</strong><br>
+                </div>
+                
+                <div class="bloque-texto">
+                    <p><strong>Para Universidades:</strong><br>
                     Gestiona y promociona tus charlas y talleres.</p>
                 </div>
             </div>
         </section>
+
     </main>
 
 </body>
