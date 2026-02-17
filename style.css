@@ -244,7 +244,7 @@ body.cuerpo-auth { display: flex; justify-content: center; align-items: center; 
    9. MEDIA QUERIES (Responsive general)
    ========================================= */
 
-/* --- TABLET / PORTÁTIL PEQUEÑO (max 1024px) --- */
+/* --- TABLET / PORTÁTIL (max 1024px) --- */
 @media (max-width: 1024px) {
     .grid-tarjetas, .grid-tarjetas-2col {
         grid-template-columns: repeat(2, 1fr); /* Reducimos a 2 columnas */
@@ -266,7 +266,7 @@ body.cuerpo-auth { display: flex; justify-content: center; align-items: center; 
     }
 }
 
-/* --- MÓVIL / TABLET PEQUEÑA (max 768px) --- */
+/* --- MÓVIL / TABLET (max 768px) --- */
 @media (max-width: 768px) {
     /* Layout Auth: Invertimos orden (Login primero, Info abajo) */
     .contenedor-auth {
@@ -356,5 +356,19 @@ body.cuerpo-auth { display: flex; justify-content: center; align-items: center; 
     /* Buscador Input */
     .contenedor-busqueda { padding: 5px 10px; }
     .btn-buscar { padding: 10px 15px; }
+    
+@media (max-width: 480px) {
+    .header-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+    .perfil-usuario { width: 100%; justify-content: space-between; }
+    
+    .titulo-bienvenida { font-size: 1.5rem; }
+    .stat-box { padding: 10px; }
+    
+    .acciones-agenda { flex-direction: column; }
+    
+    /* Ocultar texto del menú inferior para ahorrar espacio en pantallas muy pequeñas */
+    .item-nav { font-size: 0; padding: 12px; }
+    .item-nav svg { width: 26px; height: 26px; margin-bottom: 0; }
+}
 }
 
