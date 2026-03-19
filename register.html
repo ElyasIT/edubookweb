@@ -7,20 +7,15 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body class="cuerpo-auth">
-
     <main class="contenedor-auth">
-        
         <section class="panel lado-formulario">
-            
             <div class="caja-logo">
                 <img src="assets/logo.png" alt="Logotipo EduBook" class="img-logo">
             </div>
 
-            <form action="login.html" class="formulario-login">
-                
+            <form action="register.php" method="POST" class="formulario-login">
                 <div class="grupo-rol">
                     <label>Tipo de usuario</label>
-                    
                     <div class="opciones-rol">
                         <input type="radio" id="rol-explorador" name="rol" value="explorador" checked>
                         <label for="rol-explorador" class="caja-rol">Explorador</label>
@@ -32,22 +27,22 @@
 
                 <div class="grupo-input">
                     <label for="name">Nombre completo</label>
-                    <input type="text" id="name" required>
+                    <input type="text" id="name" name="nombre" required>
                 </div>
 
                 <div class="grupo-input">
                     <label for="email">Correo electrónico</label>
-                    <input type="email" id="email" required>
+                    <input type="email" id="email" name="email" required>
                 </div>
 
                 <div class="grupo-input">
                     <label for="uni">Tu universidad / Centro</label>
-                    <input type="text" id="uni">
+                    <input type="text" id="uni" name="universidad">
                 </div>
 
                 <div class="grupo-input">
                     <label for="pass">Contraseña (Mínimo 8 caracteres)</label>
-                    <input type="password" id="pass" minlength="8" required>
+                    <input type="password" id="pass" name="password" minlength="8" required>
                 </div>
 
                 <div class="grupo-input">
@@ -57,43 +52,35 @@
 
                 <label class="checkbox-terminos">
                     <input type="checkbox" required> 
-                    <span>Acepto los términos y condiciones y la política de privacidad</span>
+                    <span>Acepto los términos y condiciones</span>
                 </label>
 
                 <button type="submit" class="btn-principal">Crear cuenta</button>
             </form>
 
-            <div class="divisor">
-                <span>o</span>
-            </div>
-
+            <div class="divisor"><span>o</span></div>
             <div class="pie-form">
-                <p style="margin-bottom: 10px;">¿Ya tienes una cuenta?</p>
+                <p>¿Ya tienes una cuenta?</p>
                 <a href="login.html" class="btn-secundario">Iniciar sesión</a>
             </div>
-
         </section>
 
         <section class="panel lado-info">
             <div class="contenido-info">
                 <div class="icono-grande">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle></svg>
                 </div>
                 <h2 class="titulo-bienvenida">Únete a la comunidad</h2>
-                
                 <div class="bloque-texto">
-                    <p><strong>Para Estudiantes:</strong><br>
-                    Explora eventos, filtra por temas de interés y recibe notificaciones.</p>
+                    <p><strong>Estudiantes:</strong> Explora eventos y talleres.</p>
                 </div>
-                
                 <div class="bloque-texto">
-                    <p><strong>Para Universidades:</strong><br>
-                    Gestiona y promociona tus charlas y talleres.</p>
+                    <p><strong>Universidades:</strong> Gestiona y promociona tus charlas.</p>
                 </div>
             </div>
         </section>
-
     </main>
 
+    <script src="script.js"></script>
 </body>
 </html>
