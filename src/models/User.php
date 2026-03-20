@@ -3,16 +3,21 @@ require_once __DIR__ . '/../../config/webhooks.php';
 
 class User {
     
+    /**
+     * Envía los datos a n8n usando cURL de forma segura.
+     */
     private function sendToN8n($url, $data) {
         $ch = curl_init($url);
+        
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST           => true,
             CURLOPT_POSTFIELDS     => json_encode($data),
-            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_SSL_VERIFYPEER => false, // Útil si tu local no tiene certificados actualizados
             CURLOPT_HTTPHEADER     => [
                 'Content-Type: application/json',
-                'X-Internal-Secret: ' . N8N_SECRET
+                // CAMBIO IMPORTANTE: Usamos 'Authorization' para coincidir con el Header Auth de n8n
+                'Authorization: ' . N8N_SECRET 
             ],
         ]);
 
@@ -21,26 +26,29 @@ class User {
         $curlError = curl_error($ch);
         curl_close($ch);
 
+        // Error de conexión cURL
         if ($curlError) {
             return [
                 'httpCode' => 502, 
-                'data' => ['status' => 'error', 'message' => 'Fallo cURL: ' . $curlError]
+                'data' => ['status' => 'error', 'message' => 'Error de conexión cURL: ' . $curlError]
             ];
         }
 
+        // Si n8n no responde o el workflow está desactivado
         if ($httpCode === 404 || !$response) {
             return [
                 'httpCode' => 404, 
-                'data' => ['status' => 'error', 'message' => 'n8n devolvió 404 o sin respuesta. ¿Está ACTIVADO el workflow en n8n?']
+                'data' => ['status' => 'error', 'message' => 'El servidor de n8n no responde. ¿Está el workflow ACTIVO?']
             ];
         }
 
         $resData = json_decode($response, true);
 
+        // Error en el formato de respuesta (si n8n devuelve texto en lugar de JSON)
         if (json_last_error() !== JSON_ERROR_NONE) {
             return [
                 'httpCode' => 502, 
-                'data' => ['status' => 'error', 'message' => 'n8n devolvió un formato inválido: ' . strip_tags($response)]
+                'data' => ['status' => 'error', 'message' => 'Respuesta inválida del servidor: ' . strip_tags($response)]
             ];
         }
 
@@ -58,4 +66,3 @@ class User {
         return $this->sendToN8n(N8N_WEBHOOK_LOGIN, $data);
     }
 }
-?>

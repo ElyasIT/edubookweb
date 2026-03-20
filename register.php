@@ -10,10 +10,17 @@ $data = json_decode($rawInput, true);
 
 if (!$data) {
     http_response_code(400);
-    echo json_encode(['status' => 'error', 'message' => 'No llegaron datos al servidor.']);
+    echo json_encode(['status' => 'error', 'message' => 'No se recibieron datos.']);
     exit;
 }
 
 $controller = new UserController();
-$controller->login($data);
-?>
+$result = $controller->register($data); // Enviamos todo el array con nombre, email, uni, etc.
+
+if (isset($result['status']) && $result['status'] === 'ok') {
+    http_response_code(201); // 201 Created es mas profesional para registros
+} else {
+    http_response_code(400);
+}
+
+echo json_encode($result);

@@ -12,13 +12,13 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = Object.fromEntries(formData.entries());
             const actionFile = form.getAttribute('action');
 
-            // Corrección: ahora busca register.php o registro.php
-            if (actionFile === 'registro.php' || actionFile === 'register.php') {
+            // Validacion de coincidencia de contraseñas en el registro
+            if (actionFile.includes('register.php') || actionFile.includes('registro.php')) {
                 const pass = form.querySelector('#pass').value;
                 const passConfirm = form.querySelector('#pass-confirm').value;
                 
                 if (pass !== passConfirm) {
-                    alert('❌ Las contraseñas no coinciden.');
+                    alert('Error: Las contraseñas no coinciden.');
                     return;
                 }
             }
@@ -33,29 +33,29 @@ document.addEventListener('DOMContentLoaded', () => {
                     body: JSON.stringify(data)
                 });
 
-                // MODO DIAGNÓSTICO: Leemos el texto crudo primero
+                // Lectura de la respuesta en formato texto para diagnóstico
                 const textResponse = await response.text();
                 let result;
                 
                 try {
                     result = JSON.parse(textResponse);
                 } catch (parseError) {
-                    console.error("🔥 ERROR CRÍTICO DEL SERVIDOR PHP 🔥");
+                    console.error("Error critico del servidor PHP:");
                     console.error(textResponse);
-                    alert("El servidor PHP falló. Abre la consola (F12) para ver el error real.");
+                    alert("Error: El servidor no devolvió un formato JSON válido. Consulte la consola para más detalles.");
                     return;
                 }
 
                 if (response.ok && (result.status === 'ok' || result.user)) {
-                    alert('✅ ' + (result.message || 'Operación exitosa'));
+                    alert('Operacion exitosa: ' + (result.message || 'Acceso concedido.'));
                     window.location.href = 'index.html'; 
                 } else {
-                    alert('⚠️ ' + (result.message || 'Error en la operación'));
+                    alert('Error en la operacion: ' + (result.message || 'No se pudo completar la solicitud.'));
                 }
 
             } catch (error) {
                 console.error('Error de red:', error);
-                alert('🚫 No se pudo conectar. Revisa tu consola (F12).');
+                alert('Error: No se pudo establecer conexion con el servidor.');
             } finally {
                 submitBtn.innerText = originalBtnText;
                 submitBtn.disabled = false;
