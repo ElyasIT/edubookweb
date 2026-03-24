@@ -1,9 +1,52 @@
+<?php
+require_once '../../config/webhooks.php';
+require_once '../controllers/UserController.php';
+
+// Si es una petición POST, procesamos el login como API
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Cabeceras profesionales
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: ' . ALLOWED_ORIGIN);
+    header('Access-Control-Allow-Methods: POST');
+
+    // Captura de datos JSON
+    $rawInput = file_get_contents('php://input');
+    $data = json_decode($rawInput, true);
+
+    if (!$data || !isset($data['email']) || !isset($data['password'])) {
+        http_response_code(400);
+        echo json_encode([
+            'status' => 'error', 
+            'message' => 'Solicitud invalida: faltan credenciales.'
+        ]);
+        exit;
+    }
+
+    $controller = new UserController();
+
+    // Llamamos al metodo login pasando el email y la password
+    $result = $controller->login($data['email'], $data['password']);
+
+    // Verificamos el resultado para establecer el codigo de respuesta HTTP
+    if (isset($result['status']) && $result['status'] === 'ok') {
+        http_response_code(200);
+    } else {
+        // Si n8n devolvio error o las credenciales fallaron
+        http_response_code(401);
+    }
+
+    // Enviamos la respuesta final al script.js
+    echo json_encode($result);
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - EduBook</title>
+    <!-- Actualizado el path de assets -->
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body class="cuerpo-auth">
@@ -24,7 +67,7 @@
                 <img src="assets/img/logo.png" alt="Logotipo EduBook" class="img-logo">
             </div>
 
-            <form action="../../login.php" method="POST" class="formulario-login">
+            <form action="login.php" method="POST" class="formulario-login">
                 <div class="grupo-rol">
                     <label>Tipo de usuario</label>
                     <div class="opciones-rol">
@@ -59,7 +102,7 @@
             <div class="divisor"><span>o</span></div>
             <div class="pie-form">
                 <p>¿No tienes una cuenta?</p>
-                <a href="register.html" class="btn-secundario">Crear cuenta</a>
+                <a href="register.php" class="btn-secundario">Crear cuenta</a>
             </div>
         </section>
     </main>

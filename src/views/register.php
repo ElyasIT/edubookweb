@@ -1,3 +1,34 @@
+<?php
+require_once '../../config/webhooks.php';
+require_once '../controllers/UserController.php';
+
+// Si es una petición POST, procesamos el registro como API
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    header('Content-Type: application/json; charset=utf-8');
+    header('Access-Control-Allow-Origin: ' . ALLOWED_ORIGIN);
+
+    $rawInput = file_get_contents('php://input');
+    $data = json_decode($rawInput, true);
+
+    if (!$data) {
+        http_response_code(400);
+        echo json_encode(['status' => 'error', 'message' => 'No se recibieron datos.']);
+        exit;
+    }
+
+    $controller = new UserController();
+    $result = $controller->register($data); // Enviamos todo el array con nombre, email, uni, etc.
+
+    if (isset($result['status']) && $result['status'] === 'ok') {
+        http_response_code(201); // 201 Created es mas profesional para registros
+    } else {
+        http_response_code(400);
+    }
+
+    echo json_encode($result);
+    exit;
+}
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -13,7 +44,7 @@
                 <img src="assets/img/logo.png" alt="Logotipo EduBook" class="img-logo">
             </div>
 
-            <form action="../../register.php" method="POST" class="formulario-login">
+            <form action="register.php" method="POST" class="formulario-login">
                 <div class="grupo-rol">
                     <label>Tipo de usuario</label>
                     <div class="opciones-rol">
@@ -61,7 +92,7 @@
             <div class="divisor"><span>o</span></div>
             <div class="pie-form">
                 <p>¿Ya tienes una cuenta?</p>
-                <a href="login.html" class="btn-secundario">Iniciar sesión</a>
+                <a href="login.php" class="btn-secundario">Iniciar sesión</a>
             </div>
         </section>
 
