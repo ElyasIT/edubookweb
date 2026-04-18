@@ -1,0 +1,88 @@
+{
+    "eventos": [
+        {
+            "id": "evt_seed_001",
+            "titulo": "Jornada de Puertas Abiertas",
+            "descripcion": "Descubre nuestra universidad, conoce los grados disponibles, habla con profesores y actuales estudiantes. Una oportunidad única para resolver todas tus dudas antes de matricularte.",
+            "fecha": "2025-06-15",
+            "lugar": "Campus Central, Aula Magna",
+            "categoria": "ciencias",
+            "modalidad": "presencial",
+            "imagen": "assets/img/evento1.png",
+            "creador_id": "system",
+            "creador_nombre": "EduBook",
+            "universidad": "Universidad de Barcelona",
+            "created_at": "2025-04-01 10:00:00"
+        },
+        {
+            "id": "evt_seed_002",
+            "titulo": "Taller de Diseño UX",
+            "descripcion": "Aprende las bases del diseño centrado en el usuario. Durante este taller intensivo exploraremos metodologías como Design Thinking, prototipado y test de usabilidad con herramientas reales.",
+            "fecha": "2025-06-22",
+            "lugar": "Elisava — Sala de Proyectos",
+            "categoria": "diseno",
+            "modalidad": "presencial",
+            "imagen": "assets/img/evento3.png",
+            "creador_id": "system",
+            "creador_nombre": "EduBook",
+            "universidad": "Elisava",
+            "created_at": "2025-04-02 10:00:00"
+        },
+        {
+            "id": "evt_seed_003",
+            "titulo": "Feria de Ingeniería 2025",
+            "descripcion": "La feria anual de proyectos de ingeniería donde los mejores TFG y TFM se exponen al público. Empresas del sector asistirán en busca de nuevo talento. Entrada libre.",
+            "fecha": "2025-07-05",
+            "lugar": "Pabellón de Exposiciones Norte",
+            "categoria": "ingenieria",
+            "modalidad": "presencial",
+            "imagen": "assets/img/evento2.png",
+            "creador_id": "system",
+            "creador_nombre": "EduBook",
+            "universidad": "Universidad Europea",
+            "created_at": "2025-04-03 10:00:00"
+        },
+        {
+            "id": "evt_seed_004",
+            "titulo": "Hackathon 2025",
+            "descripcion": "48 horas para crear soluciones tecnológicas a retos reales propuestos por empresas colaboradoras. Se forman equipos de 3 a 5 personas. Premios en metálico para los 3 primeros clasificados.",
+            "fecha": "2025-06-28",
+            "lugar": "Campus Norte — Sala de Innovación",
+            "categoria": "tecnologia",
+            "modalidad": "presencial",
+            "imagen": "assets/img/logo.png",
+            "creador_id": "system",
+            "creador_nombre": "EduBook",
+            "universidad": "Campus Norte",
+            "created_at": "2025-04-04 10:00:00"
+        },
+        {
+            "id": "evt_seed_005",
+            "titulo": "Torneo E-Sports Universitario",
+            "descripcion": "Compite contra equipos de otras universidades en los títulos más populares del momento. Inscripción por equipos de 5. Transmisión en directo por Twitch.",
+            "fecha": "2025-07-12",
+            "lugar": "Online — Twitch & Discord",
+            "categoria": "tecnologia",
+            "modalidad": "online",
+            "imagen": "assets/img/logo.png",
+            "creador_id": "system",
+            "creador_nombre": "EduBook",
+            "universidad": "Online",
+            "created_at": "2025-04-05 10:00:00"
+        },
+        {
+            "id": "evt_seed_006",
+            "titulo": "Ciberseguridad 101",
+            "descripcion": "Taller introductorio sobre seguridad informática: conceptos básicos, tipos de ataques más comunes, buenas prácticas y cómo proteger tus datos en la red.",
+            "fecha": "2025-07-19",
+            "lugar": "UPC — Aula 3B",
+            "categoria": "tecnologia",
+            "modalidad": "presencial",
+            "imagen": "assets/img/logo.png",
+            "creador_id": "system",
+            "creador_nombre": "EduBook",
+            "universidad": "UPC",
+            "created_at": "2025-04-06 10:00:00"
+        }
+    ]
+}

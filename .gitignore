@@ -1,0 +1,35 @@
+# =============================================
+# EduBook — .gitignore
+# =============================================
+
+# Credenciales y configuración sensible
+# ⚠️ Descomenta la siguiente línea en producción
+# config/webhooks.php
+
+# Datos de usuarios en producción (NO subir datos reales)
+# En desarrollo se suben vacíos como plantilla
+# data/roles.json
+# data/avatars.json
+# data/users_data.json
+
+# Fotos de perfil subidas por usuarios
+src/views/assets/img/avatars/*
+!src/views/assets/img/avatars/.gitkeep
+
+# Imágenes de eventos subidas por usuarios
+src/views/assets/img/eventos/*
+!src/views/assets/img/eventos/.gitkeep
+
+# PHP cache
+*.cache
+
+# OS / Editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Logs
+*.log

@@ -1,21 +1,25 @@
 <div align="center">
-  <br />
-  <a href="https://github.com/ElyasIT/edubookweb" target="_blank">
-    <img src="src/views/assets/img/logo.png" alt="EduBook Logo" width="150" style="border-radius:20px; box-shadow: 0 4px 8px rgba(0,0,0,0.1);"/>
-  </a>
-  <br />
 
-  # 🎓 EduBook Web
+<br/>
 
-  **Centralizando la Vida Académica: Eventos, Charlas y Talleres Universitarios en tu Bolsillo.**
+<img src="src/views/assets/img/logo.png" alt="EduBook Logo" width="140"/>
 
-  <p align="center">
-    <img src="https://img.shields.io/badge/Versi%C3%B3n-1.0.0-blue?style=for-the-badge&logo=appveyor" alt="Version" />
-    <img src="https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white" alt="PHP" />
-    <img src="https://img.shields.io/badge/Frontend-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" alt="JS" />
-    <img src="https://img.shields.io/badge/Backend-n8n_Webhooks-FF6E4A?style=for-the-badge&logo=n8n&logoColor=white" alt="n8n" />
-    <img src="https://img.shields.io/badge/Licencia-MIT-green?style=for-the-badge" alt="License" />
-  </p>
+<br/><br/>
+
+# 🎓 EduBook Web
+
+### Centralizando la Vida Académica — Eventos, Charlas y Talleres Universitarios en un Solo Lugar.
+
+<br/>
+
+![Version](https://img.shields.io/badge/Versión-1.3.0-0A66C2?style=for-the-badge&logo=appveyor)
+![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=for-the-badge&logo=php&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![n8n](https://img.shields.io/badge/Auth-n8n_Webhooks-FF6E4A?style=for-the-badge&logo=n8n&logoColor=white)
+![Supabase](https://img.shields.io/badge/DB-Supabase-3ECF8E?style=for-the-badge&logo=supabase&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS-Vanilla-1572B6?style=for-the-badge&logo=css3&logoColor=white)
+![License](https://img.shields.io/badge/Licencia-MIT-22c55e?style=for-the-badge)
+
 </div>
 
 ---
@@ -25,210 +29,466 @@
 1. [Acerca del Proyecto](#-acerca-del-proyecto)
 2. [Características Principales](#-características-principales)
 3. [Arquitectura y Tecnologías](#-arquitectura-y-tecnologías)
-    - [El Ecosistema (Diagrama)](#el-ecosistema-diagrama)
+   - [Ecosistema General](#ecosistema-general)
+   - [Diagrama de Clases](#diagrama-de-clases)
+   - [Diagrama de Secuencia — Login Flow](#diagrama-de-secuencia--login-flow)
+   - [Tecnologías Clave del Stack](#tecnologías-clave-del-stack)
 4. [Estructura del Proyecto (MVC)](#-estructura-del-proyecto-mvc)
-5. [Roles de Usuario](#-roles-de-usuario)
-6. [Prerrequisitos e Instalación](#-prerrequisitos-e-instalación)
-7. [Guía de Contribución](#-guía-de-contribución)
-8. [Licencia](#-licencia)
+5. [Roles de Usuario y RBAC](#-roles-de-usuario-y-rbac)
+6. [Asistente Virtual (Chatbot)](#-asistente-virtual-chatbot)
+7. [Prerrequisitos e Instalación](#-prerrequisitos-e-instalación)
+8. [Guía de Contribución](#-guía-de-contribución)
+9. [Licencia](#-licencia)
 
 ---
 
 ## 📖 Acerca del Proyecto
 
-**EduBook** nace para solucionar un problema clásico en los campus universitarios: la dispersión de la información sobre eventos extracurriculares. 
+**EduBook** nace para resolver uno de los problemas más comunes en los campus universitarios: **la dispersión de la información sobre eventos extracurriculares**.
 
-Es una plataforma centralizada y accesible donde las instituciones pueden promocionar sus charlas, y los estudiantes pueden descubrirlas, inscribirse y gestionar su asistencia de manera intuitiva. Al usar una arquitectura híbrida entre PHP tradicional (patrón MVC) y webhooks serverless (**n8n**), EduBook demuestra que es posible crear aplicaciones robustas, escalables y altamente seguras enfocándose en una integración ágil por medio de microservicios sin requerir bases de datos relacionales locales y rígidas.
+Es una plataforma web centralizada donde las instituciones pueden publicar charlas, talleres y seminarios, y los estudiantes pueden descubrirlos, inscribirse y organizar su agenda académica de manera intuitiva.
+
+La aplicación combina:
+- Una arquitectura **MVC limpia en PHP** para toda la lógica de servidor.
+- **Webhooks serverless (n8n + Supabase)** para autenticación segura, evitando bases de datos locales.
+- **Almacenamiento JSON local** para la gestión de eventos y avatares persistentes sin infraestructura adicional.
+
+> ✅ Autorizado por el docente para uso de n8n y Supabase como backend de autenticación.
 
 ---
 
 ## ✨ Características Principales
 
-- ⚡ **Severless Auth**: El inicio de sesión y el registro son validados asíncronamente a través de flujos en [n8n](https://n8n.io/).
-- 📱 **Mobile-First & Responsive**: Interfaz de usuario (UI) moderna, pulida con CSS Vanilla y garantizada para funcionar en cualquier dispositivo móvil o de escritorio.
-- 🔍 **Buscador Inteligente de Eventos**: Permite filtrar seminarios y talleres proactivamente.
-- 📅 **Vista de Calendario Dinámica**: Visualiza tu agenda académica mensual de un solo vistazo con herramientas interactivas.
-- 💾 **Gestor de Favoritos**: Guarda las conferencias que te interesan en tu área de usuario personal.
-- 🔒 **Seguridad por Sesiones PHP**: Acceso protegido a rutas críticas manejado de forma limpia mediante abstracciones directas en los Controladores MVC.
+| Funcionalidad | Descripción |
+|:---|:---|
+| 🔐 **Auth Serverless** | Login y registro validados en tiempo real vía webhooks n8n + Supabase |
+| 👤 **Registro Dual (Tabs)** | Formularios separados para **Explorador** y **Manager** con campos específicos |
+| 📸 **Avatar Persistente** | La foto de perfil del Manager se guarda en servidor y se recupera al re-ingresar |
+| 🎫 **CRUD de Eventos** | Managers crean, editan y eliminan sus propios eventos; Exploradores los ven e inscriben |
+| 🔒 **RBAC Completo** | Rutas y componentes protegidos según el rol del usuario en cada petición |
+| 🗃️ **Eventos Permanentes** | Eventos del sistema (`creador_id: system`) siempre visibles y no eliminables |
+| 🔍 **Buscador con Filtros** | Filtrado por texto, categoría y modalidad en tiempo real (client-side) |
+| 📱 **Mobile-First** | Diseño responsive con CSS Vanilla, Bottom Navigation en móvil |
+| 🍞 **Notificaciones Toast** | Sistema de alertas animadas para feedback inmediato al usuario |
+| 📅 **Agenda y Favoritos** | Vistas exclusivas de Exploradores para organizar su actividad |
 
 ---
 
 ## 🏗️ Arquitectura y Tecnologías
 
-El proyecto se despliega bajo el paradigma modular **Modelo-Vista-Controlador (MVC)**, orientado a separar de forma estandarizada e inteligente la lógica de negocio, las peticiones HTTP y la interfaz gráfica.
+El proyecto sigue el patrón **Modelo-Vista-Controlador (MVC)**, separando de forma estricta la lógica de negocio, el enrutamiento y la presentación.
 
-### El Ecosistema (Diagrama General)
+### Ecosistema General
 
 ```mermaid
 graph LR
-    A[Cliente / Navegador (HTML/JS)] -->|Submit Data via Fetch (JSON/FormData)| B(PHP / Controladores MVC)
-    B -->|Wrapper cURL + API Auth| C{Webhooks n8n (Serverless)}
-    C -->|Validación / Lógica DB| D[(Base de Datos Externa)]
-    C -->|Response (Token/Estado) 200 OK| B
-    B -->|$_SESSION Start / Auth state| A
+    A["🌐 Cliente (HTML + JS)"] -->|"Fetch API — JSON/FormData"| B["⚙️ PHP Controllers (MVC)"]
+    B -->|"cURL + Authorization Header"| C{"🔗 Webhooks n8n"}
+    C -->|"Validación / Auth"| D[("🗄️ Supabase DB")]
+    C -->|"Response JSON 200 OK"| B
+    B -->|"$_SESSION activa"| A
+    B <-->|"Lectura / Escritura"| E[("📂 data/\nevents.json\navatars.json")]
+    B <-->|"Archivos de imagen"| F["🖼️ assets/img/\navatars/ · eventos/"]
 ```
 
-### Clase Principal: UserController
+---
 
-Para entender mejor el proxy de peticiones, aquí presentamos los diagramas de clases y de secuencia de nuestro controlador vital.
+### Diagrama de Clases
 
-**Diagrama de Clases**
 ```mermaid
 classDiagram
+    direction LR
+
     class UserController {
-        -callWebhook(url: string, data: array) array
+        -userModel : User
+        -avatarsFile : string
+        -rolesFile : string
         +__construct()
-        +login(email: string, password: string) array
-        +register(userData: array) array
+        +login(email, password, rolFormulario) array
+        +register(userData) array
         +logout() array
+        +saveAvatar(userId, path) bool
+        -loadAvatar(userId) string
+        -loadRol(email) string
     }
+
+    class User {
+        -sendToN8n(url, data) array
+        +registerUser(data) array
+        +loginUser(data) array
+    }
+
+    class Event {
+        -filePath : string
+        +__construct()
+        +getAll() array
+        +getRecent(n) array
+        +getByCreator(userId) array
+        +getById(id) array
+        +create(data) array
+        +update(id, data, userId) array
+        +delete(id, userId) array
+        -readAll() array
+        -writeAll(eventos) bool
+    }
+
+    class rbac {
+        <<middleware>>
+        +requireRole(requiredRole) void
+    }
+
+    class auth_protect {
+        <<middleware>>
+        +checkSession() void
+    }
+
+    UserController --> User : usa
+    UserController ..> Event : independiente
+    rbac ..> UserController : protege rutas
+    auth_protect ..> UserController : verifica sesión
 ```
 
-**Diagrama de Secuencia (Login Flow)**
+---
+
+### Diagrama de Secuencia — Login Flow
+
 ```mermaid
 sequenceDiagram
-    actor Cliente as Navegador (Fetch API)
-    participant UC as UserController (PHP)
+    actor U as 👤 Usuario
+    participant V as login.php (Vista)
+    participant JS as script.js (Fetch)
+    participant UC as UserController
+    participant M as User (Model)
     participant N8N as Webhooks n8n
-    participant Session as $_SESSION
+    participant DB as Supabase DB
+    participant RJ as roles.json
+    participant S as $_SESSION
 
-    Cliente->>UC: Inicia Login (email, password)
-    activate UC
-    UC->>N8N: callWebhook(N8N_WEBHOOK_LOGIN, payload)
-    activate N8N
-    Note over UC,N8N: cURL con Header Authorization: EDUBOOK
-    N8N-->>UC: Response JSON (status: ok/error)
-    deactivate N8N
-    
-    alt Responde 200 OK y status 'ok'
-        UC->>Session: Inicia Sesión (session_start)
-        UC->>Session: Almacena 'user' y 'access_token'
-        UC-->>Cliente: Devuelve datos (200 OK)
-    else Error o Credenciales Inválidas
-        UC-->>Cliente: Devuelve Error (message)
+    U->>V: Introduce email + contraseña
+    V->>JS: submit del formulario
+    JS->>V: POST fetch('/login.php') JSON
+
+    V->>UC: login(email, password, rolFormulario)
+    UC->>UC: Valida email y campos
+    UC->>M: loginUser({email, password})
+    M->>N8N: cURL POST con Authorization: N8N_SECRET
+    N8N->>DB: Consulta credenciales
+    DB-->>N8N: Usuario encontrado / no encontrado
+    N8N-->>M: JSON {status, user, access_token}
+    M-->>UC: {httpCode, data}
+
+    alt httpCode 200 y status "ok"
+        Note over UC: Resolución de rol (prioridad)
+        UC->>UC: 1️⃣ ¿n8n devolvió rol válido?
+        UC->>RJ: 2️⃣ loadRol(email) → roles.json
+        Note over UC,RJ: Rol guardado al registrarse (fuente de verdad)
+        UC->>UC: 3️⃣ Fallback: selección del formulario
+        UC->>UC: loadAvatar(userId) desde avatars.json
+        UC->>S: $_SESSION['user'] = user_data + rol correcto
+        UC->>S: $_SESSION['access_token'] = token
+        UC-->>V: {status: "ok", ...}
+        V-->>JS: 200 OK
+        JS->>U: Toast ✅ + redirect a profile.php
+    else Credenciales inválidas o error
+        UC-->>V: {status: "error", message}
+        V-->>JS: 401
+        JS->>U: Alerta ❌ "Datos incorrectos o usuario no registrado"
     end
-    deactivate UC
 ```
+
+---
 
 ### Tecnologías Clave del Stack
 
-| Frontend | Backend & Lógica | Infraestructura Asíncrona |
-| :--- | :--- | :--- |
-| HTML5 Semántico y Accesible | PHP 8.x (Núcleo) | [n8n](https://n8n.io/) Webhooks (Backend-as-a-Service) |
-| CSS3 (Variables, Flexbox, Grid) | Arquitectura Patrón MVC | Autenticación Segura |
-| Vanilla JavaScript (Fetch API, DOM) | Manejo Avanzado de Webhooks | Microservicios REST |
+| Capa | Tecnología | Rol |
+|:---|:---|:---|
+| **Frontend** | HTML5 Semántico | Estructura de vistas |
+| **Frontend** | CSS3 Vanilla — un único `style.css` | Diseño dark mode + responsive (sin estilos inline) |
+| **Frontend** | JavaScript ES6+ (Fetch API, FormData) | Peticiones asíncronas, uploads, toasts y chatbot |
+| **Backend** | PHP 8.x (MVC) | Controladores, modelos, vistas dinámicas |
+| **Backend** | Sesiones PHP nativas | Gestión de autenticación stateful |
+| **Backend** | PHP cURL | Proxy de peticiones a n8n |
+| **Auth** | [n8n](https://n8n.io/) Webhooks | Orquestador serverless de auth + chatbot |
+| **Auth DB** | [Supabase](https://supabase.com/) | Base de datos de usuarios (PostgreSQL) |
+| **Persistencia** | JSON local (`data/`) | Eventos, avatares, roles y datos de perfil por email |
+| **Archivos** | Sistema de ficheros PHP | Imágenes de eventos y avatares |
+| **IA / Chatbot** | n8n + LLM vía webhook | Asistente virtual integrado en todas las páginas |
 
 ---
 
 ## 📂 Estructura del Proyecto (MVC)
 
-Nuestra base de código es intencionalmente limpia y modular. Al no acoplar lógica excesiva en las vistas, favorecemos la mantenibilidad:
-
 ```text
-📦 edubookweb
- ┣ 📂 config                  # 🔧 Variables globales y configuración principal.
- ┃ ┗ 📜 webhooks.php          # Definición obligatoria de N8N_SECRET y endpoints API.
- ┣ 📂 src                     # 💻 Core de la aplicación.
- ┃ ┣ 📂 controllers           # 🎮 Controladores (Lógica y enrutamiento).
- ┃ ┃ ┣ 📜 UserController.php  # Controlador API (Maneja POST, Login, Auth con n8n).
- ┃ ┃ ┗ 📜 logout.php          # Termina la sesión PHP local y destruye cookies.
- ┃ ┣ 📂 models                # 📦 Entidades de datos y objetos de negocio.
- ┃ ┃ ┗ 📜 User.php            # Modelo estructural para representar al usuario en sesión.
- ┃ ┗ 📂 views                 # 👁️ Presentación (Vistas y templates devueltos al usuario).
- ┃   ┣ 📂 assets              # 🎨 Recursos estáticos procesados por el navegador.
- ┃   ┃ ┣ 📂 img               # Imágenes y logotipos (logo.png, etc).
- ┃   ┃ ┣ 📜 script.js         # Lógica frontend interactiva (modales, fetch).
- ┃   ┃ ┗ 📜 style.css         # Hoja de estilos principal (Design System).
- ┃   ┣ 📜 buscar.html         # Módulo UI: Motor de búsqueda y filtrado de eventos.
- ┃   ┣ 📜 calendario.html     # Módulo UI: Integración de vista de malla temporal mensual.
- ┃   ┣ 📜 evento.html         # Módulo UI: Detail-page de cada seminario/charla.
- ┃   ┣ 📜 favoritos.html      # Módulo UI: Colección curada por el usuario.
- ┃   ┣ 📜 index.html          # Vista inicial / Landing page (Home).
- ┃   ┣ 📜 login.php           # Vista híbrida de acceso y procesamiento de sesión de entrada.
- ┃   ┣ 📜 profile.html        # UI dashboard del perfil de usuario y configuración.
- ┃   ┗ 📜 register.php        # Vista híbrida de creación y enrutador proxy registral.
- ┗ 📜 README.md               # 📚 Documentación técnica (Este archivo).
+📦 edubookweb/
+ │
+ ├── 📂 config/
+ │   └── 📜 webhooks.php          ← Endpoints n8n, N8N_SECRET y ALLOWED_ORIGIN
+ │
+ ├── 📂 data/                     ← Persistencia local (NO versionar en producción)
+ │   ├── 📜 events.json           ← Todos los eventos (incluye los del sistema)
+ │   ├── 📜 avatars.json          ← Mapa userId → ruta de avatar persistida
+ │   ├── 📜 roles.json            ← Mapa email → rol real (guardado al registrarse)
+ │   └── 📜 users_data.json       ← Mapa email → {nombre, universidad} persistidos
+ │
+ ├── 📂 src/
+ │   ├── 📂 controllers/
+ │   │   ├── 📜 UserController.php  ← Login, Register, Logout, Avatar, Rol
+ │   │   ├── 📜 auth_protect.php    ← Middleware: requiere sesión activa
+ │   │   ├── 📜 rbac.php            ← Middleware: control de acceso por rol
+ │   │   └── 📜 logout.php          ← Destruye sesión → redirect login
+ │   │
+ │   ├── 📂 models/
+ │   │   ├── 📜 User.php            ← Wrapper cURL hacia webhooks n8n
+ │   │   └── 📜 Event.php           ← CRUD completo sobre events.json
+ │   │
+ │   └── 📂 views/
+ │       ├── 📂 assets/
+ │       │   ├── 📂 img/
+ │       │   │   ├── 📂 avatars/    ← Fotos de perfil subidas por Managers
+ │       │   │   └── 📂 eventos/    ← Imágenes de eventos subidas por Managers
+ │       │   ├── 📜 script.js       ← Fetch API, Toast, redirecciones
+ │       │   └── 📜 style.css       ← Hoja de estilos principal
+ │       │
+ │       ├── 📂 partials/
+ │       │   ├── 📜 sidebar.php     ← Sidebar dinámico con filtro de rol
+ │       │   └── 📜 chatbot.php     ← Widget flotante del asistente IA
+ │       │
+ │       ├── 📜 login.php           ← Auth (POST + HTML): login dual por rol
+ │       ├── 📜 register.php        ← Auth (POST + HTML): tabs Explorador / Manager
+ │       ├── 📜 index.php           ← Dashboard principal con accesos rápidos
+ │       ├── 📜 buscar.php          ← Buscador de eventos con filtros en tiempo real
+ │       ├── 📜 evento.php          ← Detalle de evento
+ │       ├── 📜 crear_evento.php    ← Formulario de creación (solo Managers)
+ │       ├── 📜 editar_evento.php   ← Edición de evento propio (solo el creador)
+ │       ├── 📜 panel.php           ← Panel de gestión de eventos (solo Managers)
+ │       ├── 📜 profile.php         ← Perfil de usuario + cambio de foto
+ │       ├── 📜 calendario.php      ← Agenda (solo Exploradores)
+ │       └── 📜 favoritos.php       ← Guardados (solo Exploradores)
+ │
+ ├── 📂 workflows/                 ← Backups de flujos n8n para importar
+ │   ├── 📜 EduBook - Login.json    ← Lee user_metadata de Supabase; valida por access_token
+ │   ├── 📜 EduBook - Registro.json ← Detecta email ya registrado en español
+ │   └── 📜 EduBook - Chatbot.json  ← Workflow del asistente virtual con prompt del proyecto
+ │
+ └── 📜 README.md
 ```
 
 ---
 
-## 👥 Roles de Usuario
+## 👥 Roles de Usuario y RBAC
 
-El ecosistema de EduBook distingue claramente entre los niveles de autorización requeridos en los Controladores:
+EduBook implementa un sistema de **Control de Acceso Basado en Roles (RBAC)** a nivel de servidor en cada petición, mediante `rbac.php` y `auth_protect.php`.
 
-1. 🎒 **Explorador (Estudiantes)**: Cuentas base. Pueden explorar el catálogo de eventos, confirmar asistencias, gestionar su propio calendario y organizar guardados en favoritos.
-2. 🏛️ **Manager (Universidades / Organizadores)**: Cuentas institucionales con capacidades administrativas para inyectar datos de nuevos seminarios en el ecosistema, editar metadatos y consultar telemetría de asistencia.
+### Tabla de Permisos
+
+| Funcionalidad | 🎒 Explorador | 🏛️ Manager |
+|:---|:---:|:---:|
+| Ver eventos publicados | ✅ | ✅ |
+| Buscar y filtrar eventos | ✅ | ✅ |
+| Inscribirse a un evento | ✅ | ✅ |
+| Ver su perfil | ✅ | ✅ |
+| Mi Calendario | ✅ | ❌ |
+| Mis Favoritos | ✅ | ❌ |
+| **Cambiar foto de perfil** | ❌ | ✅ |
+| **Foto de perfil al registrarse** | ❌ | ✅ |
+| **Crear eventos** | ❌ | ✅ |
+| **Editar sus propios eventos** | ❌ | ✅ |
+| **Eliminar sus propios eventos** | ❌ | ✅ |
+| **Panel de Gestión** | ❌ | ✅ |
+| Eliminar eventos del sistema | ❌ | ❌ |
+| **Usar el chatbot asistente** | ✅ | ✅ |
+
+> [!IMPORTANT]
+> Los eventos con `creador_id: "system"` son **permanentes**. Ningún usuario, ni siquiera un Manager, puede eliminarlos. Son los eventos de relleno que siempre aparecen en la plataforma.
+
+> [!NOTE]
+> El rol se resuelve siempre con esta prioridad: **n8n/Supabase** → **`data/roles.json`** (guardado al registrarse) → selección del formulario de login. Esto garantiza que un usuario registrado como Explorador nunca pueda obtener rol Manager aunque lo seleccione en el login.
+
+---
+
+## 🤖 Asistente Virtual (Chatbot)
+
+EduBook integra un **asistente IA flotante** disponible en todas las páginas autenticadas. Permite al usuario (o al profesor durante la evaluación) preguntar sobre la arquitectura, tecnologías y decisiones de diseño del proyecto.
+
+### Características
+
+- **Botón flotante** dorado en la esquina inferior derecha
+- **Animación de escritura** (tres puntos) mientras el modelo procesa
+- **Badge de notificación** cuando llega una respuesta con el chat cerrado
+- **Sesión persistente** por pestaña (sessionId aleatorio)
+- **Prompt del sistema embebido** en PHP con toda la documentación del proyecto
+
+### Flujo técnico
+
+```
+Usuario escribe pregunta
+→ JS POST a N8N_CHATBOT_URL  { chatInput, sessionId, systemPrompt }
+→ n8n procesa con LLM usando el systemPrompt del proyecto
+→ Respuesta aparece en el panel del chat
+```
+
+### Configuración
+
+El endpoint del chatbot se define en `config/webhooks.php`:
+
+```php
+define('N8N_CHATBOT_URL', 'https://n8n.kairasystems.com/webhook/edubook-chatbot/chat');
+```
+
+El workflow de n8n se importa desde `workflows/EduBook - Chatbot.json`.
+
+> [!TIP]
+> El chatbot está preentrenado con toda la información del proyecto: stack, arquitectura MVC, flujo de login, descripción de roles, decisiones de diseño y más. Es ideal para responder preguntas del docente durante la defensa.
 
 ---
 
 ## ⚙️ Prerrequisitos e Instalación
 
-Sigue estos pasos precisos para desplegar tu entorno de trabajo local en minutos.
+### 1. Requisitos del Sistema
 
-### 1. Requisitos Previos
-
-- **PHP 8.0** o superior activo en tu variable de entorno PATH.
-- **Git** instalado en tu sistema.
-- Un servidor web local tradicional (XAMPP, WAMP, Laragon, MAMP), o simplemente el *Built-in Server* nativo de PHP.
-- *(Opcional)*: Una instancia activa de **n8n** (self-hosted o cloud) configurada con los webflows correspondientes a la API Auth para procesar los requests reales.
+- **PHP 8.0 o superior** — con extensión **`curl`** habilitada.
+- **Servidor web local**: XAMPP, WAMP, Laragon, MAMP, o el Built-in Server de PHP.
+- **Git** para clonar el repositorio.
+- *(Para autenticación real)* Una instancia de **n8n** activa (self-hosted o cloud) con los workflows importados desde `/workflows/`.
 
 ### 2. Clonar el Repositorio
-
-Abre tu terminal y ejecuta:
 
 ```bash
 git clone https://github.com/ElyasIT/edubookweb.git
 cd edubookweb
 ```
 
-### 3. Configuración Primordial de Entorno
+### 3. Configurar los Webhooks
 
-El proyecto requiere parámetros vitales en `config/webhooks.php`. Es indispensable crearlo si no existe (el `.gitignore` podría estar obviando variables sensibles).
+Edita el archivo `config/webhooks.php` con tus propios endpoints:
 
 ```php
 <?php
 // config/webhooks.php
-define('N8N_WEBHOOK_LOGIN', 'https://n8n.kairasystems.com/webhook/edubook/login');
-define('N8N_WEBHOOK_REGISTER', 'https://n8n.kairasystems.com/webhook/edubook/registro');
-define('N8N_SECRET', 'EDUBOOK');
-define('ALLOWED_ORIGIN', '*');
+
+define('N8N_WEBHOOK_LOGIN',    'https://TU_N8N/webhook/edubook/login');
+define('N8N_WEBHOOK_REGISTER', 'https://TU_N8N/webhook/edubook/registro');
+define('N8N_CHATBOT_URL',      'https://TU_N8N/webhook/edubook-chatbot/chat');
+define('N8N_SECRET',           'TU_TOKEN_SECRETO');
+define('ALLOWED_ORIGIN',       '*');
 ?>
 ```
 
-> [!WARNING]  
-> Asegúrate de no versionar de manera pública tus verdaderos *tokens webhooks* (N8N_SECRET) para evitar que terceros inyecten datos a tus flujos asíncronos en n8n.
+> [!WARNING]
+> **Nunca subas `N8N_SECRET` a un repositorio público.** Añade `config/webhooks.php` a tu `.gitignore` antes de hacer commit.
 
-### 4. Compilación y Arranque del Servidor
+### 4. Importar los Workflows de n8n
 
-Para fines de desarrollo en un entorno de pruebas, basta con utilizar el propio motor de PHP en el directorio raíz:
+1. Abre tu instancia de n8n.
+2. Ve a **Workflows → Import from File**.
+3. Importa los tres archivos JSON de la carpeta `/workflows/`:
+   - `EduBook - Login.json` — lee `user_metadata` de Supabase, valida por `access_token`
+   - `EduBook - Registro.json` — detecta email ya registrado con mensaje en español
+   - `EduBook - Chatbot.json` — asistente IA con prompt del proyecto embebido
+4. Activa los workflows y copia las URLs de los webhooks generados en `config/webhooks.php`.
 
+### 5. Permisos de Escritura (Servidor)
+
+Asegúrate de que el servidor web pueda escribir en estas rutas:
+
+```bash
+# Linux / macOS
+chmod 755 data/
+chmod 755 src/views/assets/img/avatars/
+chmod 755 src/views/assets/img/eventos/
+```
+
+En Windows con XAMPP, estas carpetas ya tienen permisos de escritura por defecto.
+
+### 6. Arrancar el Servidor de Desarrollo
+
+**Opción A — PHP Built-in Server** (sin XAMPP):
 ```bash
 php -S localhost:8000
 ```
+Accede en: `http://localhost:8000/src/views/login.php`
 
-Dirígete a tu navegador en `http://localhost:8000/src/views/login.php` y comienza a debuggear el sistema en profundidad.
+**Opción B — XAMPP / WAMP**:
+1. Copia la carpeta `edubookweb/` dentro de `htdocs/` (XAMPP) o `www/` (WAMP).
+2. Inicia Apache desde el panel de control.
+3. Accede en: `http://localhost/edubookweb/src/views/login.php`
+
+---
+
+## 🔧 Variables de Configuración
+
+| Constante | Descripción | Ejemplo |
+|:---|:---|:---|
+| `N8N_WEBHOOK_LOGIN` | URL del webhook de n8n para login | `https://mi-n8n.com/webhook/login` |
+| `N8N_WEBHOOK_REGISTER` | URL del webhook de n8n para registro | `https://mi-n8n.com/webhook/registro` |
+| `N8N_CHATBOT_URL` | URL del webhook del chatbot IA | `https://mi-n8n.com/webhook/edubook-chatbot/chat` |
+| `N8N_SECRET` | Token secreto enviado en el header `Authorization` | `EDUBOOK` |
+| `ALLOWED_ORIGIN` | Origen permitido en CORS | `*` o dominio específico |
+
+---
+
+## 🐛 Problemas Conocidos y Soluciones
+
+| Síntoma | Causa probable | Solución |
+|:---|:---|:---|
+| "Datos incorrectos o usuario no registrado" | n8n offline o workflow inactivo | Activar el workflow en n8n |
+| Login con contraseña incorrecta deja entrar | Workflow de login desactualizado | Reimportar `EduBook - Login.json` (valida por `access_token`) |
+| Nombre y universidad vacíos en el perfil | n8n no devuelve `user_metadata` | Reimportar `EduBook - Login.json`; los datos también se guardan en `users_data.json` |
+| "Email ya registrado" no aparece en registro | Workflow de registro desactualizado | Reimportar `EduBook - Registro.json` |
+| Chatbot no responde | Workflow de chatbot inactivo en n8n | Activar `EduBook - Chatbot.json` en n8n |
+| La foto de perfil no se guarda | Sin permisos de escritura en `data/` o `avatars/` | `chmod 755` en las carpetas |
+| El rol al hacer login es incorrecto | Usuario registrado antes de que existiera `roles.json` | Borra y vuelve a registrar, o edita `data/roles.json` manualmente |
+| La foto del Manager al registrarse no aparece | `data/` sin permisos de escritura | `chmod 755 data/` y `chmod 755 assets/img/avatars/` |
+| Error 500 al crear evento | Sin permisos en `assets/img/eventos/` | `chmod 755` en la carpeta |
+| La sesión expira sola | `session.gc_maxlifetime` en `php.ini` demasiado bajo | Aumentar el valor o usar cookies |
 
 ---
 
 ## 🤝 Guía de Contribución
 
-¡EduBook adopta activamente la colaboración de la comunidad Open Source! Sigue nuestras directrices recomendadas:
+¡EduBook acepta contribuciones de la comunidad! Sigue estas directrices:
 
-1. Realiza un `Fork` del proyecto.
-2. Crea tu rama para una nueva característica (`git checkout -b feature/ImplementarNuevaVista`).
-3. Realiza tus commits con mensajes descriptivos (`git commit -m 'feat: Añade controlador para reset password'`).
-4. Haz push a tu fork remoto (`git push origin feature/ImplementarNuevaVista`).
-5. Abre formalmente un **Pull Request**.
+1. **Fork** el repositorio y clónalo localmente.
+2. Crea una rama descriptiva:
+   ```bash
+   git checkout -b feature/NombreDeCaracteristica
+   ```
+3. Haz commits atómicos con mensajes semánticos:
+   ```bash
+   git commit -m "feat: añade filtro por fecha en el buscador"
+   git commit -m "fix: corrige redirección tras logout en móvil"
+   ```
+4. Sube tu rama y abre un **Pull Request** detallando los cambios.
 
-Para reportar bugs o disfuncionalidades en los controladores PHP o UI, utiliza el [Tablón de Issues](https://github.com/ElyasIT/edubookweb/issues).
+### Convenciones de Commits
+
+| Prefijo | Uso |
+|:---|:---|
+| `feat:` | Nueva funcionalidad |
+| `fix:` | Corrección de bug |
+| `refactor:` | Refactorización sin cambio funcional |
+| `style:` | Cambios de estilo / formato |
+| `docs:` | Documentación |
+| `chore:` | Tareas de mantenimiento |
 
 ---
 
 ## 📄 Licencia
 
-Todo el código contenido en este proyecto está publicado bajo la [**Licencia MIT**](LICENSE). Eres absolutamente libre de clonar, refactorizar arquitectónicamente, modificar módulos de vistas, y distribuir la plataforma completa en tus proyectos comerciales, startups ed-tech o de uso académico personal.
+Todo el código de este proyecto está publicado bajo la [**Licencia MIT**](LICENSE).
 
-<br />
+Eres libre de clonar, modificar, distribuir y usar este proyecto en aplicaciones académicas, personales y comerciales.
+
+---
+
 <div align="center">
-  <sub>Arquitecturado, programado y diseñado con ❤️ para revolucionar el acceso a la educación transversal en los campus.</sub>
+
+**EduBook Web** · Desarrollado con ❤️ para revolucionar el acceso a la información universitaria.
+
+<br/>
+
+[![PHP](https://img.shields.io/badge/PHP-8.x-777BB4?style=flat-square&logo=php&logoColor=white)](https://php.net)
+[![n8n](https://img.shields.io/badge/n8n-Serverless-FF6E4A?style=flat-square&logo=n8n&logoColor=white)](https://n8n.io)
+[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?style=flat-square&logo=supabase&logoColor=white)](https://supabase.com)
+
 </div>

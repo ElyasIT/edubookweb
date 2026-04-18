@@ -1,0 +1,325 @@
+{
+  "name": "EduBook - Registro",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/registro",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "cf22e060-3b38-4f2b-b8c9-d8737c5790e8",
+      "name": "Webhook Registro",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        128
+      ],
+      "webhookId": "edubook-registro-webhook",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mSoagAW1OTV1tRey",
+          "name": "EduBook-PHP-Secret"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "const body = $input.first().json.body;\n\nconst nombre      = (body.nombre      || '').trim();\nconst email       = (body.email       || '').trim().toLowerCase();\nconst password    = (body.password    || '');\nconst universidad = (body.universidad || '').trim();\nconst rol         = (body.rol         || 'explorador').trim();\n\nlet error = null;\nif (!nombre || !email || !password) error = 'Faltan campos obligatorios';\nelse if (password.length < 8) error = 'La contraseña debe tener al menos 8 caracteres';\n\nif (error) {\n  return [{ json: { has_error: true, error_msg: error } }];\n}\n\nreturn [{ json: { has_error: false, nombre, email, password, universidad, rol } }];"
+      },
+      "id": "98856120-479b-41ba-9363-845570b8abb4",
+      "name": "Validar Campos",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -656,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-001",
+              "leftValue": "={{ $json.has_error }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "nueva-cond-validar",
+      "name": "¿Error en Validación?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        -460,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://vibsrorignwbcwqbuten.supabase.co/auth/v1/signup",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apikey",
+              "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"email\": \"{{ $json.email }}\",\n  \"password\": \"{{ $json.password }}\",\n  \"data\": {\n    \"nombre\": \"{{ $json.nombre }}\",\n    \"universidad\": \"{{ $json.universidad }}\",\n    \"rol\": \"{{ $json.rol }}\"\n  }\n}",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "ffc1e3d1-0839-4a94-b894-359347ae77ae",
+      "name": "Supabase Signup",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -250,
+        128
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "LCXteM20UPGBNwED",
+          "name": "Edubook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Procesar la respuesta de Supabase y devolver mensajes en español\nconst res = $input.first().json;\n\n// Supabase puede devolver el error en distintos campos según la versión\nconst rawError = res.error || res.error_code || '';\nconst rawMsg   = res.message || res.error_description || res.msg || '';\n\n// Detectar email ya registrado\nconst emailYaExiste = \n  rawError.toString().toLowerCase().includes('already') ||\n  rawError.toString().toLowerCase().includes('exists') ||\n  rawMsg.toString().toLowerCase().includes('already') ||\n  rawMsg.toString().toLowerCase().includes('already registered') ||\n  rawMsg.toString().toLowerCase().includes('user already') ||\n  res.code === 422;\n\nif (emailYaExiste) {\n  return [{ json: {\n    has_error: true,\n    error_msg: 'Este correo ya está registrado. Inicia sesión con tu cuenta existente.'\n  }}];\n}\n\n// Otro tipo de error\nif (rawError || (!res.user && !res.id)) {\n  const msg = rawMsg || rawError || 'No se pudo crear la cuenta. Inténtalo de nuevo.';\n  return [{ json: { has_error: true, error_msg: msg } }];\n}\n\n// Registro correcto\nreturn [{ json: {\n  has_error: false,\n  user_id: (res.user || res).id || '',\n  email:   (res.user || res).email || ''\n}}];"
+      },
+      "id": "process-signup-response",
+      "name": "Procesar Respuesta Signup",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        0,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-signup-error",
+              "leftValue": "={{ $json.has_error }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "602f22fa-17c7-4738-ba36-eb79ec5948b8",
+      "name": "¿Hay error?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        224,
+        128
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Cuenta creada correctamente\",\n  \"user_id\": \"{{ $json.user_id }}\",\n  \"email\":   \"{{ $json.email }}\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "f2c3adf5-251f-45c8-850f-827a6b2d9be7",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"error\",\n  \"message\": \"{{ $json.error_msg }}\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "c608fc63-ad93-4545-b209-02c9f6bdf075",
+      "name": "Respuesta Error Signup",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        448,
+        256
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"error\", \"message\": \"{{ $json.error_msg }}\" }",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "f3453613-bcf9-4279-9107-c3989d8f0d63",
+      "name": "Error Validación",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        -448,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Registro": {
+      "main": [
+        [
+          {
+            "node": "Validar Campos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Validar Campos": {
+      "main": [
+        [
+          {
+            "node": "¿Error en Validación?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Error en Validación?": {
+      "main": [
+        [
+          {
+            "node": "Error Validación",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Supabase Signup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Signup": {
+      "main": [
+        [
+          {
+            "node": "Procesar Respuesta Signup",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Procesar Respuesta Signup": {
+      "main": [
+        [
+          {
+            "node": "¿Hay error?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Hay error?": {
+      "main": [
+        [
+          {
+            "node": "Respuesta Error Signup",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "62d0317d-dc86-4e59-89db-bb1b19d35528",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55b28fa42f9bb2dd03e76a45bbd55d74feec7c39e86a08e58c24219f01f687d9"
+  },
+  "id": "9BCdv7ETMxDR5Sbj",
+  "tags": [
+    {
+      "updatedAt": "2026-03-16T11:04:24.086Z",
+      "createdAt": "2026-03-16T11:04:24.086Z",
+      "id": "3n4lx5jfiKw1EXs1",
+      "name": "EduBook"
+    }
+  ]
+}

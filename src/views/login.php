@@ -2,21 +2,21 @@
 require_once '../../config/webhooks.php';
 require_once '../controllers/UserController.php';
 
-// Si es una petición POST, procesamos el login como API
+// PROCESAR POST 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Cabeceras profesionales
+    // CABECERAS 
     header('Content-Type: application/json; charset=utf-8');
     header('Access-Control-Allow-Origin: ' . ALLOWED_ORIGIN);
     header('Access-Control-Allow-Methods: POST');
 
-    // Captura de datos JSON
+    // CAPTURA JSON 
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true);
 
     if (!$data || !isset($data['email']) || !isset($data['password'])) {
         http_response_code(400);
         echo json_encode([
-            'status' => 'error', 
+            'status' => 'error',
             'message' => 'Solicitud invalida: faltan credenciales.'
         ]);
         exit;
@@ -24,37 +24,41 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     $controller = new UserController();
 
-    // Llamamos al metodo login pasando el email y la password
-    $result = $controller->login($data['email'], $data['password']);
+    // ROL FORMULARIO 
+    $rolFormulario = strtolower(trim($data['rol'] ?? 'explorador'));
+    $result = $controller->login($data['email'], $data['password'], $rolFormulario);
 
-    // Verificamos el resultado para establecer el codigo de respuesta HTTP
+    // VERIFICAR RESULTADO 
     if (isset($result['status']) && $result['status'] === 'ok') {
         http_response_code(200);
     } else {
-        // Si n8n devolvio error o las credenciales fallaron
+        // ERROR 
         http_response_code(401);
     }
 
-    // Enviamos la respuesta final al script.js
+    // RESPUESTA 
     echo json_encode($result);
     exit;
 }
 ?>
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - EduBook</title>
-    <!-- Actualizado el path de assets -->
     <link rel="stylesheet" href="assets/style.css">
 </head>
+
 <body class="cuerpo-auth">
     <main class="contenedor-auth">
         <section class="panel lado-info">
             <div class="contenido-info">
                 <div class="icono-grande">
-                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3"/></svg>
+                    <svg width="60" height="60" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4M10 17l5-5-5-5M15 12H3" />
+                    </svg>
                 </div>
                 <h2 class="titulo-bienvenida">Bienvenido</h2>
                 <p class="texto-descriptivo">Centraliza y simplifica el acceso a eventos universitarios.</p>
@@ -109,4 +113,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     <script src="assets/script.js"></script>
 </body>
+
 </html>

@@ -1,0 +1,154 @@
+{
+  "name": "EduBook - Login",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/login",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "0cec0de8-22de-4f47-aea8-a0726dd75878",
+      "name": "Webhook Login",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [-656, 128],
+      "webhookId": "edubook-login-webhook",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mSoagAW1OTV1tRey",
+          "name": "EduBook-PHP-Secret"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://vibsrorignwbcwqbuten.supabase.co/auth/v1/token?grant_type=password",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type",  "value": "application/json" },
+            { "name": "apikey",        "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={\n  \"email\": \"{{ $json.body.email }}\",\n  \"password\": \"{{ $json.body.password }}\"\n}",
+        "options": {
+          "response": { "response": { "neverError": true } }
+        }
+      },
+      "id": "d8ba46bd-31dc-414c-a9f5-2373fa2eb58e",
+      "name": "Supabase SignIn",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [-448, 128]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Validar la respuesta de Supabase de forma robusta\nconst res = $input.first().json;\n\n// Supabase puede indicar error en distintos campos según la versión\nconst hasErrorField  = !!res.error;         // 'invalid_grant'\nconst hasErrorCode   = !!res.error_code;    // 'invalid_credentials'\nconst hasMessage     = !!res.message;       // 'Invalid login credentials'\nconst hasAccessToken = !!res.access_token;  // Si no hay token, no se autenticó\nconst httpCode       = res.$responseCode || 0;\n\n// Credenciales incorrectas: hay error O falta el access_token\nconst loginFailed = hasErrorField || hasErrorCode || !hasAccessToken;\n\nif (loginFailed) {\n  return [{ json: { login_ok: false } }];\n}\n\n// Login correcto → extraer perfil de user_metadata\nconst user = res.user || {};\nconst meta = user.user_metadata || {};\n\nconst nombre      = meta.nombre      || meta.full_name || '';\nconst universidad = meta.universidad || meta.university || '';\nconst rol         = (meta.rol || 'explorador').toLowerCase().trim();\n\nreturn [{ json: {\n  login_ok:     true,\n  access_token: res.access_token || '',\n  expires_in:   res.expires_in   || 3600,\n  user_id:      user.id          || '',\n  user_email:   user.email       || '',\n  nombre,\n  universidad,\n  rol\n}}];"
+      },
+      "id": "validate-login-response",
+      "name": "Validar Respuesta Login",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [-224, 128]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-login-ok",
+              "leftValue": "={{ $json.login_ok }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-login-ok",
+      "name": "¿Login correcto?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [0, 128]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"access_token\": \"{{ $json.access_token }}\",\n  \"expires_in\": {{ $json.expires_in }},\n  \"user\": {\n    \"id\":          \"{{ $json.user_id }}\",\n    \"email\":       \"{{ $json.user_email }}\",\n    \"nombre\":      \"{{ $json.nombre }}\",\n    \"universidad\": \"{{ $json.universidad }}\",\n    \"rol\":         \"{{ $json.rol }}\"\n  }\n}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "2c10391a-09e8-498e-b9c0-a4819733d89a",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [224, 0]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{ \"status\": \"error\", \"message\": \"Datos incorrectos o usuario no registrado\" }",
+        "options": { "responseCode": 401 }
+      },
+      "id": "5c3e7415-c0ed-4cf5-9793-339fa2f69973",
+      "name": "Respuesta Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [224, 256]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Login": {
+      "main": [[{ "node": "Supabase SignIn", "type": "main", "index": 0 }]]
+    },
+    "Supabase SignIn": {
+      "main": [[{ "node": "Validar Respuesta Login", "type": "main", "index": 0 }]]
+    },
+    "Validar Respuesta Login": {
+      "main": [[{ "node": "¿Login correcto?", "type": "main", "index": 0 }]]
+    },
+    "¿Login correcto?": {
+      "main": [
+        [{ "node": "Respuesta OK",    "type": "main", "index": 0 }],
+        [{ "node": "Respuesta Error", "type": "main", "index": 0 }]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate",
+    "availableInMCP": false
+  },
+  "versionId": "e248b0c3-81d5-457e-ad4a-999e10802b78",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "55b28fa42f9bb2dd03e76a45bbd55d74feec7c39e86a08e58c24219f01f687d9"
+  },
+  "id": "D6FRgFzAL8rxhwBB",
+  "tags": [
+    {
+      "updatedAt": "2026-03-16T11:04:24.086Z",
+      "createdAt": "2026-03-16T11:04:24.086Z",
+      "id": "3n4lx5jfiKw1EXs1",
+      "name": "EduBook"
+    }
+  ]
+}
