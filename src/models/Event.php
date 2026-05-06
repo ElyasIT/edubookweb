@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__ . '/../../config/webhooks.php';
+
 // MODELO EVENTOS 
 class Event
 {
@@ -10,15 +12,31 @@ class Event
         $this->filePath = __DIR__ . '/../../data/events.json';
     }
 
-    // LEER JSON 
+    // LEER DESDE N8N (SUPABASE)
     private function readAll(): array
     {
-        if (!file_exists($this->filePath)) {
-            return [];
+        $ch = curl_init(N8N_WEBHOOK_GET_EVENTS);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_HTTPGET => true,
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: ' . N8N_SECRET,
+                'Content-Type: application/json'
+            ]
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode === 200 && $response) {
+            $data = json_decode($response, true);
+            // Asumimos que n8n devuelve el array directamente o dentro de 'eventos'
+            return $data['eventos'] ?? $data ?? [];
         }
-        $json = file_get_contents($this->filePath);
-        $data = json_decode($json, true);
-        return $data['eventos'] ?? [];
+        
+        return [];
     }
 
     // ESCRIBIR JSON 
