@@ -48,7 +48,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - EduBook</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/style.css?v=<?php echo time(); ?>">
 </head>
 
 <body class="cuerpo-auth">
@@ -100,7 +100,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <a href="#" class="enlace-olvido">¿Olvidaste tu contraseña?</a>
                 </div>
 
-                <button type="submit" class="btn-principal">Iniciar Sesión</button>
+                <div style="display:flex; flex-direction:column; gap:10px;">
+                    <button type="submit" id="btn-login" class="btn-principal" style="display:none;">Iniciar
+                        Sesión</button>
+                    <button type="button" id="btn-show-cookies" class="btn-secundario"
+                        style="display:none; width:100%;">Mostrar aviso de cookies</button>
+                </div>
             </form>
 
             <div class="divisor"><span>o</span></div>
@@ -111,7 +116,91 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </section>
     </main>
 
+    <div id="cookie-notice" style="display:none;">
+        <p class="cookie-notice-text">
+            Este sitio web utiliza cookies para mejorar su experiencia.
+        </p>
+        <div class="cookie-notice-btns">
+            <button type="button" id="accept-cookies" class="btn-principal">Aceptar</button>
+            <button type="button" id="decline-cookies" class="btn-secundario">Rechazar</button>
+        </div>
+    </div>
+
+    <div id="logo-tooltip" style="display:none;">
+        EduBook - Gestión Universitaria
+    </div>
+
+    <div id="forgot-password-modal" style="display:none;">
+        <div class="modal-content" id="modal-inner">
+            <h3>Recuperar contraseña</h3>
+            <p>Contacta con el administrador del sistema para restablecer tu contraseña.</p>
+            <button type="button" class="btn-principal" id="close-modal-btn">De acuerdo</button>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script src="assets/script.js"></script>
+    <script>
+        $(document).ready(function () {
+            // 1. Tooltip que sigue al ratón sobre la imagen del logo
+            $('.img-logo').on('mouseenter', function () {
+                $('#logo-tooltip').show();
+            }).on('mouseleave', function () {
+                $('#logo-tooltip').hide();
+            }).on('mousemove', function (e) {
+                $('#logo-tooltip').css({ top: e.pageY + 10, left: e.pageX + 10 });
+            });
+
+            // 2. Modal con fondo transparente
+            $('.enlace-olvido').on('click', function (e) {
+                e.preventDefault();
+                $('#forgot-password-modal').css('display', 'flex');
+            });
+
+            // Ocultar modal al hacer clic en el fondo transparente o en el botón cerrar
+            $('#forgot-password-modal').on('click', function (e) {
+                if (e.target.id === 'forgot-password-modal') {
+                    $(this).hide();
+                }
+            });
+            $('#close-modal-btn').on('click', function () {
+                $('#forgot-password-modal').hide();
+            });
+
+            // 3. Lógica del Aviso de Cookies
+            let cookiesAccepted = localStorage.getItem('cookiesAccepted');
+
+            if (cookiesAccepted === 'true') {
+                $('#btn-login').show();
+                $('#btn-show-cookies').hide();
+            } else if (cookiesAccepted === 'false') {
+                $('#btn-login').hide();
+                $('#btn-show-cookies').show();
+            } else {
+                $('#cookie-notice').show();
+                $('#btn-login').hide();
+                $('#btn-show-cookies').hide();
+            }
+
+            $('#accept-cookies').on('click', function () {
+                localStorage.setItem('cookiesAccepted', 'true');
+                $('#cookie-notice').hide();
+                $('#btn-show-cookies').hide();
+                $('#btn-login').show();
+            });
+
+            $('#decline-cookies').on('click', function () {
+                localStorage.setItem('cookiesAccepted', 'false');
+                $('#cookie-notice').hide();
+                $('#btn-login').hide();
+                $('#btn-show-cookies').show();
+            });
+
+            $('#btn-show-cookies').on('click', function () {
+                $('#cookie-notice').show();
+            });
+        });
+    </script>
 </body>
 
 </html>

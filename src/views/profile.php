@@ -289,7 +289,7 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
     <?php if ($esManager): ?>
         <div class="modal-overlay" id="modal-foto">
             <div class="modal-foto">
-                <h3>📸 Cambiar foto de perfil</h3>
+                <h3>Cambiar foto de perfil</h3>
                 <p>Sube una imagen JPG, PNG o WEBP. Máx. 5MB.</p>
 
                 <img id="preview-avatar-modal" src="" alt="Preview">

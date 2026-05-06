@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         ]);
 
         $mensaje = $result['status'] === 'ok'
-            ? '✅ Evento publicado correctamente. Ya es visible para todos los usuarios.'
+            ? 'Evento publicado correctamente. Ya es visible para todos los usuarios.'
             : $result['message'];
         $tipoMsg = $result['status'];
     }
@@ -82,8 +82,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="perfil-usuario">
                     <span class="nombre-corto"><?php echo htmlspecialchars($userName); ?></span>
-                    <div class="avatar-circulo" style="background:var(--color-acento);color:#111;font-weight:bold;">
-                            <?php echo strtoupper(substr($userName, 0, 1)); ?>
+                    <?php 
+                    $navUserName = $_SESSION['user']['nombre'] ?? 'Usuario';
+                    $navAvatar = $_SESSION['user']['avatar'] ?? '';
+                    ?>
+                    <div class="avatar-circulo" <?php echo !$navAvatar ? 'style="background:var(--color-acento);color:#111;font-weight:bold;"' : 'style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;"'; ?>>
+                        <?php if ($navAvatar): ?>
+                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <?php echo strtoupper(substr($navUserName, 0, 1)); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
@@ -108,7 +116,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="card-info-personal" style="max-width:860px;">
                 <h4 class="titulo-form-perfil"
                     style="margin-bottom:26px;font-size:1rem;text-transform:none;color:var(--color-texto);">
-                    📋 Información del Evento
+                    Información del Evento
                 </h4>
                 <form action="crear_evento.php" method="POST" enctype="multipart/form-data" class="form-evento">
 

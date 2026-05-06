@@ -122,10 +122,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <!-- Tabs -->
             <div class="tabs-registro">
                 <button class="tab-btn activo" id="tab-explorador" onclick="cambiarTab('explorador')">
-                    🎓 Explorador
+                    Explorador
                 </button>
                 <button class="tab-btn" id="tab-manager" onclick="cambiarTab('manager')">
-                    🏛️ Manager
+                    Manager
                 </button>
             </div>
 

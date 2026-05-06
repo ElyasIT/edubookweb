@@ -122,7 +122,7 @@ PROMPT;
         <div id="chatbot-messages">
             <div class="chat-msg bot">
                 <div class="chat-bubble">
-                    ¡Hola! 👋 Soy el asistente de <strong>EduBook</strong>. Puedo explicarte cómo funciona la
+                    ¡Hola! Soy el asistente de <strong>EduBook</strong>. Puedo explicarte cómo funciona la
                     plataforma, las tecnologías que usamos, la arquitectura del proyecto o cualquier duda que tengas.
                     ¿En qué te ayudo?
                 </div>
@@ -496,7 +496,7 @@ PROMPT;
 
         } catch (err) {
             removeTyping();
-            appendMessage('⚠️ Error al conectar con el asistente. Comprueba tu conexión.', 'bot');
+            appendMessage('Error al conectar con el asistente. Comprueba tu conexión.', 'bot');
             console.error('Chatbot error:', err);
         } finally {
             input.disabled = false;

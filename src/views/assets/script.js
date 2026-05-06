@@ -14,9 +14,9 @@ function getToastContainer() {
 
 // ICONOS
 const ICONS = {
-    error:   `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
+    error: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>`,
     success: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>`,
-    info:    `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
+    info: `<svg class="toast-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>`,
 };
 
 // TOAST
@@ -82,7 +82,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // VALIDACION CLIENTE (contraseñas)
             if (actionFile.includes('register.php') || actionFile.includes('registro.php')) {
-                const pass        = form.querySelector('[name="password"]');
+                const pass = form.querySelector('[name="password"]');
                 const passConfirm = form.querySelector('[name="password_confirm"]');
                 if (pass && passConfirm && pass.value !== passConfirm.value) {
                     showFormAlert(form, 'Las contraseñas no coinciden.', 'error');
@@ -96,7 +96,7 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 if (submitBtn) {
                     submitBtn.innerText = 'Procesando...';
-                    submitBtn.disabled  = true;
+                    submitBtn.disabled = true;
                 }
 
                 let response;
@@ -113,9 +113,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     const formData = new FormData(form);
                     const data = Object.fromEntries(formData.entries());
                     response = await fetch(actionFile, {
-                        method:  'POST',
+                        method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
-                        body:    JSON.stringify(data)
+                        body: JSON.stringify(data)
                     });
                 }
 
@@ -144,7 +144,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         }
                     }, 1200);
 
-                // ERROR
+                    // ERROR
                 } else {
                     const msg = result.message || 'No se pudo completar la operación.';
                     showFormAlert(form, msg, 'error');
@@ -159,7 +159,7 @@ document.addEventListener('DOMContentLoaded', () => {
             } finally {
                 if (submitBtn) {
                     submitBtn.innerText = originalText;
-                    submitBtn.disabled  = false;
+                    submitBtn.disabled = false;
                 }
             }
         });

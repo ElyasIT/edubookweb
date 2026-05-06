@@ -32,9 +32,16 @@ $todosEventos = $eventModel->getAll();
                 <div class="perfil-usuario">
                     <span
                         class="nombre-corto"><?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? 'Usuario'); ?></span>
-                    <div class="avatar-circulo"
-                        style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;">
-                        <img src="assets/img/logo.png" alt="Avatar" style="width:100%;height:100%;object-fit:contain;">
+                    <?php 
+                    $navUserName = $_SESSION['user']['nombre'] ?? 'Usuario';
+                    $navAvatar = $_SESSION['user']['avatar'] ?? '';
+                    ?>
+                    <div class="avatar-circulo" <?php echo !$navAvatar ? 'style="background:var(--color-acento);color:#111;font-weight:bold;"' : 'style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;"'; ?>>
+                        <?php if ($navAvatar): ?>
+                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <?php echo strtoupper(substr($navUserName, 0, 1)); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
@@ -109,7 +116,7 @@ $todosEventos = $eventModel->getAll();
                                             <?php endif; ?>
                                         </div>
                                         <div class="contenido-tarjeta">
-                                            <div class="rating">📅 <?php echo date('d/m/Y', strtotime($evt['fecha'])); ?>
+                                            <div class="rating"><?php echo date('d/m/Y', strtotime($evt['fecha'])); ?>
                                                 &nbsp;·&nbsp; <?php echo htmlspecialchars(ucfirst($evt['modalidad'])); ?></div>
                                             <h4><?php echo htmlspecialchars($evt['titulo']); ?></h4>
                                             <p class="uni-nombre">
@@ -122,7 +129,7 @@ $todosEventos = $eventModel->getAll();
                                         <div style="position:absolute;top:10px;right:10px;display:flex;gap:6px;z-index:2;">
                                             <a href="editar_evento.php?id=<?php echo urlencode($evt['id']); ?>"
                                                 style="background:rgba(166,155,93,0.9);color:#111;border:none;padding:5px 10px;border-radius:5px;font-size:0.78rem;font-weight:bold;text-decoration:none;cursor:pointer;">
-                                                ✏️ Editar
+                                                Editar
                                             </a>
                                             <form method="POST" action="panel.php" style="display:inline;"
                                                 onsubmit="return confirm('¿Eliminar este evento?')">
@@ -131,7 +138,7 @@ $todosEventos = $eventModel->getAll();
                                                     value="<?php echo htmlspecialchars($evt['id']); ?>">
                                                 <button type="submit"
                                                     style="background:rgba(239,68,68,0.9);color:#fff;border:none;padding:5px 10px;border-radius:5px;font-size:0.78rem;font-weight:bold;cursor:pointer;">
-                                                    🗑️
+                                                    Borrar
                                                 </button>
                                             </form>
                                         </div>
@@ -143,7 +150,7 @@ $todosEventos = $eventModel->getAll();
 
                     <p id="sin-resultados"
                         style="display:none;color:var(--color-texto-gris);padding:40px 0;text-align:center;">
-                        😕 No se encontraron eventos con ese criterio.
+                        No se encontraron eventos con ese criterio.
                     </p>
                 </section>
             </div>

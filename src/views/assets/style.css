@@ -614,6 +614,11 @@ body.cuerpo-auth {
     font-weight: bold;
 }
 
+.btn-logout {
+    margin-top: 20px;
+    color: var(--color-acento);
+}
+
 .tip-container {
     margin-top: auto;
     border-top: 1px solid var(--color-borde);
@@ -1663,6 +1668,10 @@ body.cuerpo-auth {
         border-radius: 8px;
     }
 
+    .btn-logout {
+        margin-top: 0;
+    }
+
     .item-nav svg { width: 22px; height: 22px; }
 
     .contenido-principal { padding: 20px 15px; }
@@ -1736,4 +1745,132 @@ body.cuerpo-auth {
         height: 26px;
         margin-bottom: 0;
     }
+}
+
+/* ── COMPONENTES JQUERY (MODALS, COOKIES, TOOLTIP) ── */
+#cookie-notice {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 90%;
+    max-width: 500px;
+    background-color: var(--color-panel);
+    border: 1px solid var(--color-borde);
+    border-radius: 15px;
+    color: var(--color-texto);
+    padding: 25px;
+    text-align: center;
+    z-index: 1000;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+}
+
+.cookie-notice-text {
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    color: var(--color-texto-gris);
+}
+
+.cookie-notice-btns {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.cookie-notice-btns button {
+    width: auto;
+    padding: 12px 24px;
+}
+
+#logo-tooltip {
+    position: absolute;
+    background: var(--color-panel);
+    border: 1px solid var(--color-borde);
+    color: var(--color-texto);
+    padding: 8px 12px;
+    border-radius: 5px;
+    z-index: 10;
+    font-size: 12px;
+    pointer-events: none;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+#forgot-password-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.8);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+
+#forgot-password-modal .modal-content {
+    background: var(--color-panel);
+    border: 1px solid var(--color-borde);
+    padding: 30px;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 400px;
+    width: 90%;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+#forgot-password-modal h3 {
+    margin-bottom: 15px;
+    color: var(--color-acento);
+}
+
+#forgot-password-modal p {
+    color: var(--color-texto-gris);
+    margin-bottom: 20px;
+}
+
+/* ── SLIDERS (INDEX.PHP) ── */
+.seccion-sliders {
+    margin-top: 40px;
+}
+
+.slider-wrapper {
+    margin: 20px 0;
+    padding: 0 20px;
+}
+
+.slider-item {
+    padding: 10px;
+}
+
+div.tarjeta-evento.tarjeta-slider {
+    display: flex;
+    height: 100%;
+}
+
+div.imagen-evento.img-slider-container {
+    padding: 0;
+    background-color: transparent;
+}
+
+div.imagen-evento.img-slider-container img.img-slider-cover {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    max-width: none;
+    max-height: none;
+}
+
+div.tarjeta-evento.tarjeta-promotor {
+    padding: 20px;
+    text-align: center;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+div.icono-acceso.icono-promotor {
+    margin-bottom: 15px;
 }

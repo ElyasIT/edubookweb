@@ -57,7 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($res['status'] === 'ok') {
         // Recargar evento actualizado
         $evento = $eventModel->getById($id);
-        $mensaje = '✅ Evento actualizado correctamente.';
+        $mensaje = 'Evento actualizado correctamente.';
         $tipoMsg = 'ok';
     } else {
         $mensaje = $res['message'];
@@ -87,8 +87,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
                 <div class="perfil-usuario">
                     <span class="nombre-corto"><?php echo htmlspecialchars($userName); ?></span>
-                    <div class="avatar-circulo" style="background:var(--color-acento);color:#111;font-weight:bold;">
-                        <?php echo strtoupper(substr($userName, 0, 1)); ?>
+                    <?php 
+                    $navUserName = $_SESSION['user']['nombre'] ?? 'Usuario';
+                    $navAvatar = $_SESSION['user']['avatar'] ?? '';
+                    ?>
+                    <div class="avatar-circulo" <?php echo !$navAvatar ? 'style="background:var(--color-acento);color:#111;font-weight:bold;"' : 'style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;"'; ?>>
+                        <?php if ($navAvatar): ?>
+                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <?php echo strtoupper(substr($navUserName, 0, 1)); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>

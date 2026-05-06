@@ -29,10 +29,16 @@ requireRole('explorador');
                 <div class="perfil-usuario">
                     <span
                         class="nombre-corto"><?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? 'Usuario'); ?></span>
-                    <div class="avatar-circulo"
-                        style="background: transparent; border: 1px solid var(--color-borde); padding: 0; overflow: hidden;">
-                        <img src="assets/img/logo.png" alt="Avatar"
-                            style="width: 100%; height: 100%; object-fit: contain;">
+                    <?php 
+                    $navUserName = $_SESSION['user']['nombre'] ?? 'Usuario';
+                    $navAvatar = $_SESSION['user']['avatar'] ?? '';
+                    ?>
+                    <div class="avatar-circulo" <?php echo !$navAvatar ? 'style="background:var(--color-acento);color:#111;font-weight:bold;"' : 'style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;"'; ?>>
+                        <?php if ($navAvatar): ?>
+                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <?php echo strtoupper(substr($navUserName, 0, 1)); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
@@ -70,7 +76,7 @@ requireRole('explorador');
                             </div>
                         </div>
                         <div class="contenido-tarjeta">
-                            <div class="rating">★ 4.9</div>
+                            <div class="rating">4.9</div>
                             <h4>Taller de Diseño UX</h4>
                             <p class="uni-nombre">Elisava</p>
                         </div>
@@ -88,7 +94,7 @@ requireRole('explorador');
                             </div>
                         </div>
                         <div class="contenido-tarjeta">
-                            <div class="rating">★ 4.8</div>
+                            <div class="rating">4.8</div>
                             <h4>Jornada de Puertas Abiertas</h4>
                             <p class="uni-nombre">Universidad de Barcelona</p>
                         </div>
@@ -106,7 +112,7 @@ requireRole('explorador');
                             </div>
                         </div>
                         <div class="contenido-tarjeta">
-                            <div class="rating">★ 4.5</div>
+                            <div class="rating">4.5</div>
                             <h4>Feria de Ingeniería</h4>
                             <p class="uni-nombre">Universidad Europea</p>
                         </div>

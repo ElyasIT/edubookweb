@@ -26,10 +26,16 @@ require_once '../controllers/auth_protect.php';
                 <div class="perfil-usuario">
                     <span
                         class="nombre-corto"><?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? 'Usuario'); ?></span>
-                    <div class="avatar-circulo"
-                        style="background: transparent; border: 1px solid var(--color-borde); padding: 0; overflow: hidden;">
-                        <img src="assets/img/logo.png" alt="Avatar"
-                            style="width: 100%; height: 100%; object-fit: contain;">
+                    <?php 
+                    $navUserName = $_SESSION['user']['nombre'] ?? 'Usuario';
+                    $navAvatar = $_SESSION['user']['avatar'] ?? '';
+                    ?>
+                    <div class="avatar-circulo" <?php echo !$navAvatar ? 'style="background:var(--color-acento);color:#111;font-weight:bold;"' : 'style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;"'; ?>>
+                        <?php if ($navAvatar): ?>
+                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                        <?php else: ?>
+                            <?php echo strtoupper(substr($navUserName, 0, 1)); ?>
+                        <?php endif; ?>
                     </div>
                 </div>
             </header>
@@ -48,7 +54,7 @@ require_once '../controllers/auth_protect.php';
 
                 <div class="grid-inputs-perfil" style="margin-bottom: 30px;">
                     <div class="grupo-input-perfil">
-                        <label style="color: var(--color-texto-gris);">📅 Fecha</label>
+                        <label style="color: var(--color-texto-gris);">Fecha</label>
                         <p style="color: #fff; font-size: 1.1rem;">20 de Noviembre, 2024</p>
                     </div>
                     <div class="grupo-input-perfil">
@@ -56,11 +62,11 @@ require_once '../controllers/auth_protect.php';
                         <p style="color: #fff; font-size: 1.1rem;">10:00 - 14:00</p>
                     </div>
                     <div class="grupo-input-perfil">
-                        <label style="color: var(--color-texto-gris);">📍 Ubicación</label>
+                        <label style="color: var(--color-texto-gris);">Ubicación</label>
                         <p style="color: #fff; font-size: 1.1rem;">Gran Via de les Corts Catalanes, 585</p>
                     </div>
                     <div class="grupo-input-perfil">
-                        <label style="color: var(--color-texto-gris);">🏷️ Modalidad</label>
+                        <label style="color: var(--color-texto-gris);">Modalidad</label>
                         <p style="color: #fff; font-size: 1.1rem;">Presencial</p>
                     </div>
                 </div>
