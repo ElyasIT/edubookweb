@@ -39,11 +39,31 @@ class Event
         return [];
     }
 
-    // ESCRIBIR JSON 
-    private function writeAll(array $eventos): bool
+    // ENVIAR A N8N (POST)
+    private function sendToN8n(string $url, array $data): array
     {
-        $json = json_encode(['eventos' => array_values($eventos)], JSON_PRETTY_PRINT | JSON_UNESCAPED_UNICODE);
-        return (bool) file_put_contents($this->filePath, $json, LOCK_EX);
+        $ch = curl_init($url);
+        curl_setopt_array($ch, [
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_POST => true,
+            CURLOPT_POSTFIELDS => json_encode($data),
+            CURLOPT_SSL_VERIFYPEER => false,
+            CURLOPT_HTTPHEADER => [
+                'Authorization: ' . N8N_SECRET,
+                'Content-Type: application/json'
+            ]
+        ]);
+
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        if ($httpCode >= 200 && $httpCode < 300) {
+            $resData = json_decode($response, true);
+            return $resData ?? ['status' => 'ok'];
+        }
+
+        return ['status' => 'error', 'message' => 'Error en la comunicación con n8n. HTTP Code: ' . $httpCode];
     }
 
     // OBTENER TODOS 
@@ -79,7 +99,6 @@ class Event
     // CREAR 
     public function create(array $data): array
     {
-        $eventos = $this->readAll();
         $nuevo = [
             'id' => 'evt_' . uniqid(),
             'titulo' => trim($data['titulo'] ?? ''),
@@ -99,77 +118,59 @@ class Event
             return ['status' => 'error', 'message' => 'Título, descripción y fecha son obligatorios.'];
         }
 
-        $eventos[] = $nuevo;
-        if ($this->writeAll($eventos)) {
-            return ['status' => 'ok', 'evento' => $nuevo];
+        $res = $this->sendToN8n(N8N_WEBHOOK_CREATE_EVENT, $nuevo);
+        if (($res['status'] ?? '') === 'error') {
+            return $res;
         }
-        return ['status' => 'error', 'message' => 'No se pudo guardar el evento.'];
+        return ['status' => 'ok', 'evento' => $nuevo];
     }
 
     // ACTUALIZAR 
     public function update(string $id, array $data, string $userId): array
     {
-        $eventos = $this->readAll();
-        $encontrado = false;
-
-        foreach ($eventos as &$evt) {
-            if ($evt['id'] === $id) {
-                if ($evt['creador_id'] !== $userId) {
-                    return ['status' => 'error', 'message' => 'No tienes permiso para editar este evento.'];
-                }
-                $evt['titulo'] = trim($data['titulo'] ?? $evt['titulo']);
-                $evt['descripcion'] = trim($data['descripcion'] ?? $evt['descripcion']);
-                $evt['fecha'] = trim($data['fecha'] ?? $evt['fecha']);
-                $evt['lugar'] = trim($data['lugar'] ?? $evt['lugar']);
-                $evt['categoria'] = trim($data['categoria'] ?? $evt['categoria']);
-                $evt['modalidad'] = trim($data['modalidad'] ?? $evt['modalidad']);
-                if (!empty($data['imagen'])) {
-                    $evt['imagen'] = $data['imagen'];
-                }
-                $encontrado = true;
-                break;
-            }
-        }
-        unset($evt);
-
-        if (!$encontrado)
+        $evt = $this->getById($id);
+        if (!$evt) {
             return ['status' => 'error', 'message' => 'Evento no encontrado.'];
-        if ($this->writeAll($eventos))
-            return ['status' => 'ok'];
-        return ['status' => 'error', 'message' => 'Error al guardar cambios.'];
+        }
+        if ($evt['creador_id'] !== $userId) {
+            return ['status' => 'error', 'message' => 'No tienes permiso para editar este evento.'];
+        }
+
+        $evt['titulo'] = trim($data['titulo'] ?? $evt['titulo']);
+        $evt['descripcion'] = trim($data['descripcion'] ?? $evt['descripcion']);
+        $evt['fecha'] = trim($data['fecha'] ?? $evt['fecha']);
+        $evt['lugar'] = trim($data['lugar'] ?? $evt['lugar']);
+        $evt['categoria'] = trim($data['categoria'] ?? $evt['categoria']);
+        $evt['modalidad'] = trim($data['modalidad'] ?? $evt['modalidad']);
+        if (!empty($data['imagen'])) {
+            $evt['imagen'] = $data['imagen'];
+        }
+
+        $res = $this->sendToN8n(N8N_WEBHOOK_UPDATE_EVENT, $evt);
+        if (($res['status'] ?? '') === 'error') {
+            return $res;
+        }
+        return ['status' => 'ok'];
     }
 
     // ELIMINAR 
     public function delete(string $id, string $userId): array
     {
-        $eventos = $this->readAll();
-        $original = count($eventos);
-
-        $filtrados = array_filter($eventos, function ($e) use ($id, $userId) {
-            if ($e['id'] !== $id)
-                return true; // distinto ID → mantener
-
-            // Eventos del sistema: nunca se pueden borrar
-            if ($e['creador_id'] === 'system')
-                return true;
-
-            // Solo el creador puede eliminar el suyo
-            return $e['creador_id'] !== $userId;
-        });
-
-        if (count($filtrados) === $original) {
-            $evt = $this->getById($id);
-            if ($evt && $evt['creador_id'] === 'system') {
-                return ['status' => 'error', 'message' => 'Los eventos del sistema no se pueden eliminar.'];
-            }
-            if ($evt && $evt['creador_id'] !== $userId) {
-                return ['status' => 'error', 'message' => 'No tienes permiso para eliminar este evento.'];
-            }
+        $evt = $this->getById($id);
+        if (!$evt) {
             return ['status' => 'error', 'message' => 'Evento no encontrado.'];
         }
+        if ($evt['creador_id'] === 'system') {
+            return ['status' => 'error', 'message' => 'Los eventos del sistema no se pueden eliminar.'];
+        }
+        if ($evt['creador_id'] !== $userId) {
+            return ['status' => 'error', 'message' => 'No tienes permiso para eliminar este evento.'];
+        }
 
-        if ($this->writeAll($filtrados))
-            return ['status' => 'ok'];
-        return ['status' => 'error', 'message' => 'Error al eliminar el evento.'];
+        $res = $this->sendToN8n(N8N_WEBHOOK_DELETE_EVENT, ['id' => $id, 'creador_id' => $userId]);
+        if (($res['status'] ?? '') === 'error') {
+            return $res;
+        }
+        return ['status' => 'ok'];
     }
 }
