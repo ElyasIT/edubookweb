@@ -1,7 +1,17 @@
 <?php
 require_once '../controllers/auth_protect.php';
 require_once '../controllers/rbac.php';
+require_once '../models/Subscription.php';
 requireRole('explorador');
+
+$userId = $_SESSION['user']['id'];
+$subModel = new Subscription();
+$userEvents = $subModel->getUserEvents($userId);
+
+// Ordenar por fecha (próximos primero)
+usort($userEvents, function($a, $b) {
+    return strtotime($a['fecha']) - strtotime($b['fecha']);
+});
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -45,66 +55,74 @@ requireRole('explorador');
 
             <section class="seccion-dashboard">
 
-                <h4 class="fecha-separador">Hoy, 20 Noviembre</h4>
-
-                <div class="lista-vertical">
-
-                    <div class="tarjeta-agenda-larga">
-                        <div class="img-agenda">
-                            <img src="assets/img/evento1.png" alt="Evento UB" onerror="this.style.display='none'">
-                        </div>
-                        <div class="info-agenda">
-                            <span class="hora-agenda">10:00 - 14:00</span>
-                            <h4>Jornada de Puertas Abiertas</h4>
-                            <p>Universidad de Barcelona</p>
-                        </div>
-                        <div class="acciones-agenda">
-                            <a href="evento.php" class="btn-detalles">Ver Detalles</a>
-                            <button class="btn-borrar">Borrar de calendario</button>
-                        </div>
+                <?php if (empty($userEvents)): ?>
+                    <div style="text-align:center; padding:50px 20px; color:var(--color-texto-gris);">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            style="color:var(--color-borde);margin-bottom:16px;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        <p>No estás inscrito a ningún evento.</p>
+                        <a href="buscar.php" class="btn-principal"
+                            style="display:inline-block;margin-top:16px;text-decoration:none;padding:11px 22px;">Buscar eventos</a>
                     </div>
-
-                    <div class="tarjeta-agenda-larga">
-                        <div class="img-agenda">
-                            <img src="assets/img/evento2.png" alt="Evento UE" onerror="this.style.display='none'">
-                        </div>
-                        <div class="info-agenda">
-                            <span class="hora-agenda">16:00 - 19:30</span>
-                            <h4>Feria de Ingeniería</h4>
-                            <p>Universidad Europea</p>
-                        </div>
-                        <div class="acciones-agenda">
-                            <a href="evento.php" class="btn-detalles">Ver Detalles</a>
-                            <button class="btn-borrar">Borrar de calendario</button>
-                        </div>
+                <?php else: ?>
+                    <div class="lista-vertical">
+                        <?php foreach ($userEvents as $evt): ?>
+                            <div class="tarjeta-agenda-larga">
+                                <div class="img-agenda">
+                                    <?php if ($evt['imagen']): ?>
+                                        <img src="<?php echo htmlspecialchars($evt['imagen']); ?>" alt="<?php echo htmlspecialchars($evt['titulo']); ?>">
+                                    <?php else: ?>
+                                        <div style="width:100%; height:100%; background:var(--color-fondo-panel); display:flex; align-items:center; justify-content:center;">
+                                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-borde)"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                                <div class="info-agenda">
+                                    <span class="hora-agenda"><?php echo date('d/m/Y', strtotime($evt['fecha'])); ?></span>
+                                    <h4><?php echo htmlspecialchars($evt['titulo']); ?></h4>
+                                    <p><?php echo htmlspecialchars($evt['universidad'] ?: $evt['creador_nombre']); ?></p>
+                                </div>
+                                <div class="acciones-agenda">
+                                    <a href="evento.php?id=<?php echo urlencode($evt['id']); ?>" class="btn-detalles">Ver Detalles</a>
+                                    <button class="btn-borrar" onclick="cancelarSuscripcion('<?php echo htmlspecialchars($evt['id']); ?>')">Borrar de calendario</button>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
                     </div>
-
-                </div>
-
-                <h4 class="fecha-separador">Lunes, 24 Noviembre</h4>
-
-                <div class="lista-vertical">
-
-                    <div class="tarjeta-agenda-larga">
-                        <div class="img-agenda">
-                            <img src="assets/img/evento3.png" alt="Evento Elisava" onerror="this.style.display='none'">
-                        </div>
-                        <div class="info-agenda">
-                            <span class="hora-agenda">09:00 - 13:00</span>
-                            <h4>Taller de Diseño UX</h4>
-                            <p>Elisava</p>
-                        </div>
-                        <div class="acciones-agenda">
-                            <a href="evento.php" class="btn-detalles">Ver Detalles</a>
-                            <button class="btn-borrar">Borrar de calendario</button>
-                        </div>
-                    </div>
-                </div>
+                <?php endif; ?>
 
             </section>
 
         </main>
     </div>
+
+    <script>
+        async function cancelarSuscripcion(eventId) {
+            if (!confirm('¿Estás seguro de que quieres cancelar tu inscripción a este evento?')) return;
+
+            try {
+                const response = await fetch('../controllers/subscription_ajax.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'unsubscribe', event_id: eventId })
+                });
+                const data = await response.json();
+                
+                if (data.status === 'ok') {
+                    location.reload();
+                } else {
+                    alert('Error: ' + (data.message || 'No se pudo cancelar.'));
+                }
+            } catch (err) {
+                console.error(err);
+                alert('Error de conexión.');
+            }
+        }
+    </script>
 
 </body>
 

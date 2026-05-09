@@ -1,7 +1,12 @@
 <?php
 require_once '../controllers/auth_protect.php';
 require_once '../controllers/rbac.php';
+require_once '../models/Subscription.php';
 requireRole('explorador');
+
+$userId = $_SESSION['user']['id'];
+$subModel = new Subscription();
+$userEvents = $subModel->getUserEvents($userId);
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -62,63 +67,46 @@ requireRole('explorador');
                     </div>
                 </div>
 
-                <div class="grid-tarjetas">
-
-                    <a href="evento.php" class="tarjeta-evento">
-                        <div class="imagen-evento">
-                            <img src="assets/img/evento3.png" alt="Evento Elisava" onerror="this.style.display='none'">
-                            <div class="etiqueta-favorito">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                                    <path
-                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                    </path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="contenido-tarjeta">
-                            <div class="rating">4.9</div>
-                            <h4>Taller de Diseño UX</h4>
-                            <p class="uni-nombre">Elisava</p>
-                        </div>
-                    </a>
-
-                    <a href="evento.php" class="tarjeta-evento">
-                        <div class="imagen-evento">
-                            <img src="assets/img/evento1.png" alt="Evento UB" onerror="this.style.display='none'">
-                            <div class="etiqueta-favorito">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                                    <path
-                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                    </path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="contenido-tarjeta">
-                            <div class="rating">4.8</div>
-                            <h4>Jornada de Puertas Abiertas</h4>
-                            <p class="uni-nombre">Universidad de Barcelona</p>
-                        </div>
-                    </a>
-
-                    <a href="evento.php" class="tarjeta-evento">
-                        <div class="imagen-evento">
-                            <img src="assets/img/evento2.png" alt="Evento UE" onerror="this.style.display='none'">
-                            <div class="etiqueta-favorito">
-                                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
-                                    <path
-                                        d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
-                                    </path>
-                                </svg>
-                            </div>
-                        </div>
-                        <div class="contenido-tarjeta">
-                            <div class="rating">4.5</div>
-                            <h4>Feria de Ingeniería</h4>
-                            <p class="uni-nombre">Universidad Europea</p>
-                        </div>
-                    </a>
-
-                </div>
+                <?php if (empty($userEvents)): ?>
+                    <div style="text-align:center; padding:50px 20px; color:var(--color-texto-gris);">
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"
+                            style="color:var(--color-borde);margin-bottom:16px;">
+                            <rect x="3" y="4" width="18" height="18" rx="2" />
+                            <line x1="16" y1="2" x2="16" y2="6" />
+                            <line x1="8" y1="2" x2="8" y2="6" />
+                            <line x1="3" y1="10" x2="21" y2="10" />
+                        </svg>
+                        <p>No tienes eventos guardados en favoritos.</p>
+                    </div>
+                <?php else: ?>
+                    <div class="grid-tarjetas">
+                        <?php foreach ($userEvents as $evt): ?>
+                            <a href="evento.php?id=<?php echo urlencode($evt['id']); ?>" class="tarjeta-evento">
+                                <div class="imagen-evento">
+                                    <?php if ($evt['imagen']): ?>
+                                        <img src="<?php echo htmlspecialchars($evt['imagen']); ?>" alt="<?php echo htmlspecialchars($evt['titulo']); ?>">
+                                    <?php else: ?>
+                                        <div style="width:100%; height:100%; background:var(--color-fondo-panel); display:flex; align-items:center; justify-content:center;">
+                                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-borde)"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
+                                        </div>
+                                    <?php endif; ?>
+                                    <div class="etiqueta-favorito">
+                                        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                                            <path
+                                                d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z">
+                                            </path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="contenido-tarjeta">
+                                    <div class="rating"><?php echo date('d/m/Y', strtotime($evt['fecha'])); ?></div>
+                                    <h4><?php echo htmlspecialchars($evt['titulo']); ?></h4>
+                                    <p class="uni-nombre"><?php echo htmlspecialchars($evt['universidad'] ?: $evt['creador_nombre']); ?></p>
+                                </div>
+                            </a>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </section>
 
         </main>
