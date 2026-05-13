@@ -10,48 +10,77 @@ $mensajeFoto = '';
 $tipoMensaje = '';
 $userId = $_SESSION['user']['id'] ?? md5($_SESSION['user']['email'] ?? 'user');
 
-// SUBIDA FOTO 
-if ($_SERVER['REQUEST_METHOD'] === 'POST' && $esManager && isset($_FILES['foto_perfil'])) {
-    $archivo = $_FILES['foto_perfil'];
-    if ($archivo['error'] === UPLOAD_ERR_OK) {
-        $ext = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
-        $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
-        $maxBytes = 5 * 1024 * 1024;
+// SUBIDA FOTO Y ACTUALIZACIONES 
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $action = $_POST['action'] ?? '';
+    $ctrl = new UserController();
+    $userEmail = $_SESSION['user']['email'] ?? '';
 
-        if (!in_array($ext, $permitidos)) {
-            $mensajeFoto = 'Formato no permitido. Usa JPG, PNG, WEBP o GIF.';
-            $tipoMensaje = 'error';
-        } elseif ($archivo['size'] > $maxBytes) {
-            $mensajeFoto = 'La imagen es demasiado grande. Máximo 5MB.';
-            $tipoMensaje = 'error';
+    if ($action === 'update_profile') {
+        $fields = [
+            'nombre' => $_POST['nombre'] ?? '',
+            'telefono' => $_POST['telefono'] ?? '',
+            'universidad' => $_POST['universidad'] ?? '',
+            'id_estudiante' => $_POST['id_estudiante'] ?? '',
+            'fecha_nacimiento' => $_POST['fecha_nacimiento'] ?? ''
+        ];
+        if ($ctrl->saveUserData($userEmail, $fields)) {
+            $mensajeFoto = 'Perfil actualizado correctamente en la base de datos.';
+            $tipoMensaje = 'ok';
         } else {
-            $dirAvatars = __DIR__ . '/assets/img/avatars/';
-            if (!is_dir($dirAvatars))
-                mkdir($dirAvatars, 0755, true);
-
-            $nombreArchivo = 'avatar_' . preg_replace('/[^a-z0-9]/', '', strtolower($userId)) . '.' . $ext;
-            $rutaDestino = $dirAvatars . $nombreArchivo;
-
-            if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
-                $rutaWeb = 'assets/img/avatars/' . $nombreArchivo;
-
-                // Guardar en sesión
-                $_SESSION['user']['avatar'] = $rutaWeb;
-
-                // Persistir en disco para que sobreviva cierres de sesión
-                $ctrl = new UserController();
-                $ctrl->saveAvatar($userId, $rutaWeb);
-
-                $mensajeFoto = 'Foto de perfil actualizada correctamente.';
+            $mensajeFoto = 'Error al actualizar el perfil.';
+            $tipoMensaje = 'error';
+        }
+    } elseif ($action === 'update_password') {
+        $newPass = $_POST['new_password'] ?? '';
+        if (strlen($newPass) >= 8) {
+            if ($ctrl->changePassword($userEmail, $newPass)) {
+                $mensajeFoto = 'Contraseña actualizada de forma segura.';
                 $tipoMensaje = 'ok';
             } else {
-                $mensajeFoto = 'Error al guardar la imagen. Inténtalo de nuevo.';
+                $mensajeFoto = 'Error al actualizar la contraseña.';
                 $tipoMensaje = 'error';
             }
+        } else {
+            $mensajeFoto = 'La nueva contraseña debe tener al menos 8 caracteres.';
+            $tipoMensaje = 'error';
         }
-    } elseif ($archivo['error'] !== UPLOAD_ERR_NO_FILE) {
-        $mensajeFoto = 'Error al subir el archivo.';
-        $tipoMensaje = 'error';
+    } elseif ($esManager && isset($_FILES['foto_perfil'])) {
+        $archivo = $_FILES['foto_perfil'];
+        if ($archivo['error'] === UPLOAD_ERR_OK) {
+            $ext = strtolower(pathinfo($archivo['name'], PATHINFO_EXTENSION));
+            $permitidos = ['jpg', 'jpeg', 'png', 'webp', 'gif'];
+            $maxBytes = 5 * 1024 * 1024;
+
+            if (!in_array($ext, $permitidos)) {
+                $mensajeFoto = 'Formato no permitido. Usa JPG, PNG, WEBP o GIF.';
+                $tipoMensaje = 'error';
+            } elseif ($archivo['size'] > $maxBytes) {
+                $mensajeFoto = 'La imagen es demasiado grande. Máximo 5MB.';
+                $tipoMensaje = 'error';
+            } else {
+                $dirAvatars = __DIR__ . '/assets/img/avatars/';
+                if (!is_dir($dirAvatars))
+                    mkdir($dirAvatars, 0755, true);
+
+                $nombreArchivo = 'avatar_' . preg_replace('/[^a-z0-9]/', '', strtolower($userId)) . '.' . $ext;
+                $rutaDestino = $dirAvatars . $nombreArchivo;
+
+                if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
+                    $rutaWeb = 'assets/img/avatars/' . $nombreArchivo;
+                    $_SESSION['user']['avatar'] = $rutaWeb;
+                    $ctrl->saveAvatar($userId, $rutaWeb);
+                    $mensajeFoto = 'Foto de perfil actualizada correctamente.';
+                    $tipoMensaje = 'ok';
+                } else {
+                    $mensajeFoto = 'Error al guardar la imagen. Inténtalo de nuevo.';
+                    $tipoMensaje = 'error';
+                }
+            }
+        } elseif ($archivo['error'] !== UPLOAD_ERR_NO_FILE) {
+            $mensajeFoto = 'Error al subir el archivo.';
+            $tipoMensaje = 'error';
+        }
     }
 }
 
@@ -129,7 +158,6 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
                                     <?php echo htmlspecialchars($_SESSION['user']['universidad'] ?? '-'); ?>
                                 </p>
                                 <div class="btns-user-actions">
-                                    <button class="btn-editar-perfil">Editar perfil</button>
                                     <?php if ($esManager): ?>
                                         <button class="btn-cambiar-foto" id="btn-abrir-modal" type="button">Cambiar
                                             foto</button>
@@ -183,37 +211,42 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
                     </div>
 
                     <div class="card-info-personal">
-                        <h4 class="titulo-form-perfil">información personal</h4>
-                        <div class="grid-inputs-perfil">
-                            <div class="grupo-input-perfil">
-                                <label>Nombre completo</label>
-                                <input type="text"
-                                    value="<?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? ''); ?>" readonly>
+                        <h4 class="titulo-form-perfil">Información Personal</h4>
+                        <form action="profile.php" method="POST">
+                            <input type="hidden" name="action" value="update_profile">
+                            <div class="grid-inputs-perfil">
+                                <div class="grupo-input-perfil">
+                                    <label>Nombre completo</label>
+                                    <input type="text" name="nombre"
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? ''); ?>" required>
+                                </div>
+                                <div class="grupo-input-perfil">
+                                    <label>Correo electrónico (No editable)</label>
+                                    <input type="email"
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?>" readonly style="opacity:0.6; cursor:not-allowed;">
+                                </div>
+                                <div class="grupo-input-perfil">
+                                    <label>Teléfono</label>
+                                    <input type="text" name="telefono" value="<?php echo htmlspecialchars($_SESSION['user']['telefono'] ?? ''); ?>" placeholder="Ej: +34 600 000 000">
+                                </div>
+                                <div class="grupo-input-perfil">
+                                    <label>Universidad</label>
+                                    <input type="text" name="universidad"
+                                        value="<?php echo htmlspecialchars($_SESSION['user']['universidad'] ?? ''); ?>" placeholder="Ej: Universidad de Barcelona">
+                                </div>
+                                <div class="grupo-input-perfil">
+                                    <label>ID de estudiante</label>
+                                    <input type="text" name="id_estudiante" value="<?php echo htmlspecialchars($_SESSION['user']['id_estudiante'] ?? ''); ?>" placeholder="Sin ID">
+                                </div>
+                                <div class="grupo-input-perfil">
+                                    <label>Fecha de nacimiento</label>
+                                    <input type="date" name="fecha_nacimiento" value="<?php echo htmlspecialchars($_SESSION['user']['fecha_nacimiento'] ?? ''); ?>">
+                                </div>
                             </div>
-                            <div class="grupo-input-perfil">
-                                <label>Correo electrónico</label>
-                                <input type="email"
-                                    value="<?php echo htmlspecialchars($_SESSION['user']['email'] ?? ''); ?>" readonly>
+                            <div style="margin-top: 20px; display: flex; justify-content: flex-end;">
+                                <button type="submit" class="btn-principal" style="padding: 10px 24px; font-size: 0.95rem;">Guardar cambios</button>
                             </div>
-                            <div class="grupo-input-perfil">
-                                <label>Teléfono</label>
-                                <input type="text" value="<?php echo htmlspecialchars($_SESSION['user']['telefono'] ?? ''); ?>" placeholder="Sin teléfono registrado" readonly>
-                            </div>
-                            <div class="grupo-input-perfil">
-                                <label>Universidad</label>
-                                <input type="text"
-                                    value="<?php echo htmlspecialchars($_SESSION['user']['universidad'] ?? ''); ?>"
-                                    readonly>
-                            </div>
-                            <div class="grupo-input-perfil">
-                                <label>ID de estudiante</label>
-                                <input type="text" value="<?php echo htmlspecialchars($_SESSION['user']['id_estudiante'] ?? $_SESSION['user']['id'] ?? ''); ?>" placeholder="Sin ID" readonly>
-                            </div>
-                            <div class="grupo-input-perfil">
-                                <label>Fecha de nacimiento</label>
-                                <input type="text" value="<?php echo htmlspecialchars($_SESSION['user']['fecha_nacimiento'] ?? ''); ?>" placeholder="Sin fecha registrada" readonly>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
 
@@ -265,7 +298,7 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
                     <div class="card-config-cuenta">
                         <h4>Configuración de cuenta</h4>
                         <div class="lista-enlaces-config">
-                            <a href="#">Cambiar contraseña</a>
+                            <a href="#" id="btn-abrir-modal-pass">Cambiar contraseña</a>
                             <a href="#">Privacidad y seguridad</a>
                             <a href="#">Conectar calendario</a>
                             <a href="../controllers/logout.php" class="enlace-logout">
@@ -317,15 +350,15 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
         </div>
 
         <script>
-            const modal = document.getElementById('modal-foto');
-            const btnAbrir = document.getElementById('btn-abrir-modal');
-            const btnCancelar = document.getElementById('btn-cancelar-modal');
+            const modalFoto = document.getElementById('modal-foto');
+            const btnAbrirFoto = document.getElementById('btn-abrir-modal');
+            const btnCancelarFoto = document.getElementById('btn-cancelar-modal');
             const inputFoto = document.getElementById('foto_perfil');
             const preview = document.getElementById('preview-avatar-modal');
 
-            btnAbrir.addEventListener('click', () => modal.classList.add('activo'));
-            btnCancelar.addEventListener('click', () => modal.classList.remove('activo'));
-            modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('activo'); });
+            btnAbrirFoto.addEventListener('click', () => modalFoto.classList.add('activo'));
+            btnCancelarFoto.addEventListener('click', () => modalFoto.classList.remove('activo'));
+            modalFoto.addEventListener('click', e => { if (e.target === modalFoto) modalFoto.classList.remove('activo'); });
 
             inputFoto.addEventListener('change', function () {
                 const file = this.files[0];
@@ -339,6 +372,44 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
             });
         </script>
     <?php endif; ?>
+
+    <!-- MODAL CAMBIAR CONTRASEÑA -->
+    <div class="modal-overlay" id="modal-password">
+        <div class="modal-foto" style="max-width: 400px;">
+            <h3>Cambiar Contraseña</h3>
+            <p>Introduce tu nueva contraseña. Debe tener al menos 8 caracteres.</p>
+
+            <form action="profile.php" method="POST" style="margin-top: 20px;">
+                <input type="hidden" name="action" value="update_password">
+                <div style="margin-bottom: 20px; text-align: left;">
+                    <label style="display:block; margin-bottom:8px; color:var(--color-texto-gris); font-size:0.9rem;">Nueva contraseña</label>
+                    <input type="password" name="new_password" required minlength="8" style="width:100%; padding:12px; border-radius:6px; border:1px solid var(--color-borde); background:rgba(255,255,255,0.05); color:#fff;">
+                </div>
+
+                <div class="modal-acciones">
+                    <button type="button" class="btn-cancelar-modal" id="btn-cancelar-pass">Cancelar</button>
+                    <button type="submit" class="btn-principal" style="flex:1;">Actualizar</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modalPass = document.getElementById('modal-password');
+        const btnAbrirPass = document.getElementById('btn-abrir-modal-pass');
+        const btnCancelarPass = document.getElementById('btn-cancelar-pass');
+
+        if (btnAbrirPass) {
+            btnAbrirPass.addEventListener('click', (e) => {
+                e.preventDefault();
+                modalPass.classList.add('activo');
+            });
+        }
+        if (btnCancelarPass) {
+            btnCancelarPass.addEventListener('click', () => modalPass.classList.remove('activo'));
+        }
+        modalPass.addEventListener('click', e => { if (e.target === modalPass) modalPass.classList.remove('activo'); });
+    </script>
 
 </body>
 
