@@ -76,10 +76,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 if (move_uploaded_file($archivo['tmp_name'], $rutaDestino)) {
                     $rutaWeb = 'assets/img/avatars/' . $nombreArchivo;
-                    $_SESSION['user']['avatar'] = $rutaWeb;
-                    $ctrl->saveAvatar($userId, $rutaWeb);
-                    $mensajeFoto = 'Foto de perfil actualizada correctamente.';
-                    $tipoMensaje = 'ok';
+                    
+                    // Asegurar que enviamos los datos base por si se crea el perfil por primera vez
+                    $fieldsToUpdate = [
+                        'avatar' => $rutaWeb,
+                        'nombre' => $_SESSION['user']['nombre'] ?? '',
+                        'universidad' => $_SESSION['user']['universidad'] ?? ''
+                    ];
+
+                    if ($ctrl->saveUserData($userEmail, $fieldsToUpdate)) {
+                        $mensajeFoto = 'Foto de perfil actualizada correctamente.';
+                        $tipoMensaje = 'ok';
+                        $_SESSION['user']['avatar'] = $rutaWeb;
+                    } else {
+                        $mensajeFoto = 'Error al guardar la imagen en la base de datos.';
+                        $tipoMensaje = 'error';
+                    }
                 } else {
                     $mensajeFoto = 'Error al guardar la imagen. Inténtalo de nuevo.';
                     $tipoMensaje = 'error';

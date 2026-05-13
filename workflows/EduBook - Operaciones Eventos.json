@@ -1,0 +1,162 @@
+{
+  "name": "EduBook - Operaciones Eventos",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "edubook/events",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-get-events",
+      "name": "Webhook Obtener Eventos",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [ 0, 0 ],
+      "webhookId": "edubook-get-events",
+      "credentials": { "httpHeaderAuth": { "id": "mSoagAW1OTV1tRey", "name": "EduBook-PHP-Secret" } }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "https://vibsrorignwbcwqbuten.supabase.co/rest/v1/eventos?select=*",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-get-events",
+      "name": "Supabase Get Eventos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 250, 0 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify($input.all().map(i => i.json)) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "respuesta-get-events",
+      "name": "Respuesta GET",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [ 500, 0 ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/event/update",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-update-event",
+      "name": "Webhook Editar Evento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [ 0, 250 ],
+      "webhookId": "edubook-update-event",
+      "credentials": { "httpHeaderAuth": { "id": "mSoagAW1OTV1tRey", "name": "EduBook-PHP-Secret" } }
+    },
+    {
+      "parameters": {
+        "method": "PATCH",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/rest/v1/eventos?id=eq.' + $json.body.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "Content-Type", "value": "application/json" },
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.body) }}",
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-patch-event",
+      "name": "Supabase Update Evento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 250, 250 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: \"ok\" }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "respuesta-update-events",
+      "name": "Respuesta Update",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [ 500, 250 ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/event/delete",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-delete-event",
+      "name": "Webhook Borrar Evento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [ 0, 500 ],
+      "webhookId": "edubook-delete-event",
+      "credentials": { "httpHeaderAuth": { "id": "mSoagAW1OTV1tRey", "name": "EduBook-PHP-Secret" } }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/rest/v1/eventos?id=eq.' + $json.body.id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-delete-event",
+      "name": "Supabase Delete Evento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 250, 500 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: \"ok\" }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "respuesta-delete-events",
+      "name": "Respuesta Delete",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [ 500, 500 ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Obtener Eventos": { "main": [ [ { "node": "Supabase Get Eventos", "type": "main", "index": 0 } ] ] },
+    "Supabase Get Eventos": { "main": [ [ { "node": "Respuesta GET", "type": "main", "index": 0 } ] ] },
+    "Webhook Editar Evento": { "main": [ [ { "node": "Supabase Update Evento", "type": "main", "index": 0 } ] ] },
+    "Supabase Update Evento": { "main": [ [ { "node": "Respuesta Update", "type": "main", "index": 0 } ] ] },
+    "Webhook Borrar Evento": { "main": [ [ { "node": "Supabase Delete Evento", "type": "main", "index": 0 } ] ] },
+    "Supabase Delete Evento": { "main": [ [ { "node": "Respuesta Delete", "type": "main", "index": 0 } ] ] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

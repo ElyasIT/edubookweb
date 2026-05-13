@@ -1,0 +1,162 @@
+{
+  "name": "EduBook - Suscripciones",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/event/subscribe",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-subscribe",
+      "name": "Webhook Suscribirse",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [ 0, 0 ],
+      "webhookId": "edubook-subscribe",
+      "credentials": { "httpHeaderAuth": { "id": "mSoagAW1OTV1tRey", "name": "EduBook-PHP-Secret" } }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://vibsrorignwbcwqbuten.supabase.co/rest/v1/inscripciones",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Content-Type", "value": "application/json" }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify({ user_email: $json.body.user_email, event_id: $json.body.event_id }) }}",
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-subscribe",
+      "name": "Supabase Subscribe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 250, 0 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: \"ok\" }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "respuesta-subscribe",
+      "name": "Respuesta Sub",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [ 500, 0 ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/event/unsubscribe",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-unsubscribe",
+      "name": "Webhook Desuscribirse",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [ 0, 250 ],
+      "webhookId": "edubook-unsubscribe",
+      "credentials": { "httpHeaderAuth": { "id": "mSoagAW1OTV1tRey", "name": "EduBook-PHP-Secret" } }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/rest/v1/inscripciones?user_email=eq.' + $json.body.user_email + '&event_id=eq.' + $json.body.event_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-unsubscribe",
+      "name": "Supabase Unsubscribe",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 250, 250 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: \"ok\" }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "respuesta-unsubscribe",
+      "name": "Respuesta Unsub",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [ 500, 250 ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "GET",
+        "path": "edubook/user/events",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-user-events",
+      "name": "Webhook Mis Eventos",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [ 0, 500 ],
+      "webhookId": "edubook-user-events",
+      "credentials": { "httpHeaderAuth": { "id": "mSoagAW1OTV1tRey", "name": "EduBook-PHP-Secret" } }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/rest/v1/inscripciones?select=event_id&user_email=eq.' + $json.query.user_email }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-user-events",
+      "name": "Supabase Get Mis Eventos",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 250, 500 ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: \"ok\", eventos: $input.all().map(i => i.json) }) }}",
+        "options": { "responseCode": 200 }
+      },
+      "id": "respuesta-user-events",
+      "name": "Respuesta Mis Eventos",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [ 500, 500 ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Suscribirse": { "main": [ [ { "node": "Supabase Subscribe", "type": "main", "index": 0 } ] ] },
+    "Supabase Subscribe": { "main": [ [ { "node": "Respuesta Sub", "type": "main", "index": 0 } ] ] },
+    "Webhook Desuscribirse": { "main": [ [ { "node": "Supabase Unsubscribe", "type": "main", "index": 0 } ] ] },
+    "Supabase Unsubscribe": { "main": [ [ { "node": "Respuesta Unsub", "type": "main", "index": 0 } ] ] },
+    "Webhook Mis Eventos": { "main": [ [ { "node": "Supabase Get Mis Eventos", "type": "main", "index": 0 } ] ] },
+    "Supabase Get Mis Eventos": { "main": [ [ { "node": "Respuesta Mis Eventos", "type": "main", "index": 0 } ] ] }
+  },
+  "active": false,
+  "settings": { "executionOrder": "v1" }
+}

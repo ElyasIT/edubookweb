@@ -1,0 +1,184 @@
+{
+  "name": "EduBook - Crear Evento",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/event/create",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-crear-evento",
+      "name": "Webhook Crear Evento",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "edubook-event-create-webhook",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mSoagAW1OTV1tRey",
+          "name": "EduBook-PHP-Secret"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://vibsrorignwbcwqbuten.supabase.co/rest/v1/eventos",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "apikey",
+              "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=representation"
+            }
+          ]
+        },
+        "sendBody": true,
+        "contentType": "raw",
+        "rawContentType": "application/json",
+        "body": "={{ JSON.stringify($json.body) }}",
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-insert-evento",
+      "name": "Supabase Insert Evento",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        250,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 1
+          },
+          "conditions": [
+            {
+              "id": "cond-error-supabase",
+              "leftValue": "={{ $json.error || $json.message ? true : false }}",
+              "rightValue": "true",
+              "operator": {
+                "type": "boolean",
+                "operation": "true"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "id": "check-error",
+      "name": "¿Hay error?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        500,
+        0
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"evento\": {{ JSON.stringify($input.first().json) }}\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respuesta-ok",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        750,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"error\",\n  \"message\": \"{{ $json.message || $json.hint || 'Error al guardar en Supabase' }}\"\n}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "respuesta-error",
+      "name": "Respuesta Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        750,
+        -150
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Crear Evento": {
+      "main": [
+        [
+          {
+            "node": "Supabase Insert Evento",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Insert Evento": {
+      "main": [
+        [
+          {
+            "node": "¿Hay error?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "¿Hay error?": {
+      "main": [
+        [
+          {
+            "node": "Respuesta Error",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "evt-create-v1"
+}

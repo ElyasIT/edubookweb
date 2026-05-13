@@ -109,16 +109,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                                         <?php foreach ($misEventos as $evt): ?>
                                 <tr>
                                     <td>
-                                                        <?php if ($evt['imagen']): ?>
-                                            <img class="thumb-evento" src="<?php echo htmlspecialchars($evt['imagen']); ?>" alt="">
-                                                        <?php else: ?>
-                                            <div class="thumb-placeholder"><svg width="20" height="20" viewBox="0 0 24 24"
-                                                    fill="none" stroke="currentColor" stroke-width="2">
-                                                    <rect x="3" y="3" width="18" height="18" rx="2" />
-                                                    <circle cx="8.5" cy="8.5" r="1.5" />
-                                                    <polyline points="21 15 16 10 5 21" />
-                                                </svg></div>
-                                                        <?php endif; ?>
+                                                        <?php 
+                                                            $imgSrc = !empty($evt['imagen']) ? htmlspecialchars($evt['imagen']) : 'assets/img/logo.png'; 
+                                                        ?>
+                                                        <img class="thumb-evento" 
+                                                             src="<?php echo $imgSrc; ?>" 
+                                                             alt="Imagen evento"
+                                                             onerror="this.onerror=null; this.src='assets/img/logo.png';">
                                     </td>
                                     <td>
                                         <strong><?php echo htmlspecialchars($evt['titulo']); ?></strong><br>

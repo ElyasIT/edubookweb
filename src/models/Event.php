@@ -32,8 +32,17 @@ class Event
 
         if ($httpCode === 200 && $response) {
             $data = json_decode($response, true);
-            // Asumimos que n8n devuelve el array directamente o dentro de 'eventos'
-            return $data['eventos'] ?? $data ?? [];
+            $eventos = $data['eventos'] ?? $data ?? [];
+            
+            // Si n8n devuelve un solo objeto en vez de un array (ej: {"id":"1"}), lo metemos en un array
+            if (is_array($eventos) && isset($eventos['id'])) {
+                return [$eventos];
+            }
+            // Si por algún motivo no es un array, devolvemos array vacío para evitar Fatal Error
+            if (!is_array($eventos)) {
+                return [];
+            }
+            return $eventos;
         }
         
         return [];
@@ -70,7 +79,11 @@ class Event
     public function getAll(): array
     {
         $eventos = $this->readAll();
-        usort($eventos, fn($a, $b) => strcmp($b['created_at'], $a['created_at']));
+        usort($eventos, function($a, $b) {
+            $dateA = $a['created_at'] ?? $a['creado_en'] ?? '';
+            $dateB = $b['created_at'] ?? $b['creado_en'] ?? '';
+            return strcmp($dateB, $dateA);
+        });
         return $eventos;
     }
 

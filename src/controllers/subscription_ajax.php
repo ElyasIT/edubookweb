@@ -12,20 +12,20 @@ if (!isset($_SESSION['user']['id'])) {
 $data = json_decode(file_get_contents('php://input'), true);
 $action = $data['action'] ?? '';
 $eventId = $data['event_id'] ?? '';
-$userId = $_SESSION['user']['id'];
+$userEmail = strtolower(trim($_SESSION['user']['email'] ?? ''));
 
-if (!$action || !$eventId) {
-    echo json_encode(['status' => 'error', 'message' => 'Faltan parámetros']);
+if (!$action || !$eventId || !$userEmail) {
+    echo json_encode(['status' => 'error', 'message' => 'Faltan parámetros o no hay email']);
     exit;
 }
 
 $subModel = new Subscription();
 
 if ($action === 'subscribe') {
-    $result = $subModel->subscribe($userId, $eventId);
+    $result = $subModel->subscribe($userEmail, $eventId);
     echo json_encode($result);
 } elseif ($action === 'unsubscribe') {
-    $result = $subModel->unsubscribe($userId, $eventId);
+    $result = $subModel->unsubscribe($userEmail, $eventId);
     echo json_encode($result);
 } else {
     echo json_encode(['status' => 'error', 'message' => 'Acción no válida']);

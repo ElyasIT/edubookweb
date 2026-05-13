@@ -90,15 +90,45 @@
     },
     {
       "parameters": {
+        "method": "GET",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/rest/v1/perfiles?select=*&id=eq.' + $json.user_id }}",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            { "name": "apikey", "value": "sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" },
+            { "name": "Authorization", "value": "Bearer sb_publishable_uawYeXSNpPQHOA-RR2JGXg_EBvbXhhz" }
+          ]
+        },
+        "options": { "response": { "response": { "neverError": true } } }
+      },
+      "id": "supabase-get-perfil",
+      "name": "Supabase Get Perfil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [ 224, 0 ],
+      "alwaysOutputData": true
+    },
+    {
+      "parameters": {
+        "jsCode": "const authUser = $('Validar Respuesta Login').first().json;\nconst dbPerfil = $json.id ? $json : {};\n\nreturn [{ json: {\n  login_ok: true,\n  access_token: authUser.access_token,\n  expires_in: authUser.expires_in,\n  user_id: authUser.user_id,\n  user_email: authUser.user_email,\n  nombre: dbPerfil.nombre || authUser.nombre,\n  universidad: dbPerfil.universidad || authUser.universidad,\n  rol: dbPerfil.rol || authUser.rol,\n  telefono: dbPerfil.telefono || '',\n  id_estudiante: dbPerfil.id_estudiante || '',\n  fecha_nacimiento: dbPerfil.fecha_nacimiento || '',\n  avatar: dbPerfil.avatar || ''\n}}];"
+      },
+      "id": "merge-perfil",
+      "name": "Merge Perfil",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [ 448, 0 ]
+    },
+    {
+      "parameters": {
         "respondWith": "json",
-        "responseBody": "={\n  \"status\": \"ok\",\n  \"access_token\": \"{{ $json.access_token }}\",\n  \"expires_in\": {{ $json.expires_in }},\n  \"user\": {\n    \"id\":          \"{{ $json.user_id }}\",\n    \"email\":       \"{{ $json.user_email }}\",\n    \"nombre\":      \"{{ $json.nombre }}\",\n    \"universidad\": \"{{ $json.universidad }}\",\n    \"rol\":         \"{{ $json.rol }}\"\n  }\n}",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"access_token\": \"{{ $json.access_token }}\",\n  \"expires_in\": {{ $json.expires_in }},\n  \"user\": {\n    \"id\":          \"{{ $json.user_id }}\",\n    \"email\":       \"{{ $json.user_email }}\",\n    \"nombre\":      \"{{ $json.nombre }}\",\n    \"universidad\": \"{{ $json.universidad }}\",\n    \"rol\":         \"{{ $json.rol }}\",\n    \"telefono\":    \"{{ $json.telefono }}\",\n    \"id_estudiante\": \"{{ $json.id_estudiante }}\",\n    \"fecha_nacimiento\": \"{{ $json.fecha_nacimiento }}\",\n    \"avatar\":      \"{{ $json.avatar }}\"\n  }\n}",
         "options": { "responseCode": 200 }
       },
       "id": "2c10391a-09e8-498e-b9c0-a4819733d89a",
       "name": "Respuesta OK",
       "type": "n8n-nodes-base.respondToWebhook",
       "typeVersion": 1.1,
-      "position": [224, 0]
+      "position": [ 672, 0 ]
     },
     {
       "parameters": {
@@ -126,29 +156,19 @@
     },
     "¿Login correcto?": {
       "main": [
-        [{ "node": "Respuesta OK",    "type": "main", "index": 0 }],
+        [{ "node": "Supabase Get Perfil", "type": "main", "index": 0 }],
         [{ "node": "Respuesta Error", "type": "main", "index": 0 }]
       ]
+    },
+    "Supabase Get Perfil": {
+      "main": [ [ { "node": "Merge Perfil", "type": "main", "index": 0 } ] ]
+    },
+    "Merge Perfil": {
+      "main": [ [ { "node": "Respuesta OK", "type": "main", "index": 0 } ] ]
     }
   },
-  "active": true,
+  "active": false,
   "settings": {
-    "executionOrder": "v1",
-    "binaryMode": "separate",
-    "availableInMCP": false
-  },
-  "versionId": "e248b0c3-81d5-457e-ad4a-999e10802b78",
-  "meta": {
-    "templateCredsSetupCompleted": true,
-    "instanceId": "55b28fa42f9bb2dd03e76a45bbd55d74feec7c39e86a08e58c24219f01f687d9"
-  },
-  "id": "D6FRgFzAL8rxhwBB",
-  "tags": [
-    {
-      "updatedAt": "2026-03-16T11:04:24.086Z",
-      "createdAt": "2026-03-16T11:04:24.086Z",
-      "id": "3n4lx5jfiKw1EXs1",
-      "name": "EduBook"
-    }
-  ]
+    "executionOrder": "v1"
+  }
 }

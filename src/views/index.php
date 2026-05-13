@@ -158,17 +158,13 @@ $eventosRecientes = $eventModel->getRecent(3);
                         <?php foreach ($eventosRecientes as $evt): ?>
                             <a href="evento.php?id=<?php echo urlencode($evt['id']); ?>" class="tarjeta-evento">
                                 <div class="imagen-evento">
-                                    <?php if ($evt['imagen']): ?>
-                                        <img src="<?php echo htmlspecialchars($evt['imagen']); ?>"
-                                            alt="<?php echo htmlspecialchars($evt['titulo']); ?>">
-                                    <?php else: ?>
-                                        <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="1.5" style="color:var(--color-borde)">
-                                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                                            <circle cx="8.5" cy="8.5" r="1.5" />
-                                            <polyline points="21 15 16 10 5 21" />
-                                        </svg>
-                                    <?php endif; ?>
+                                    <?php 
+                                        $imgSrc = !empty($evt['imagen']) ? htmlspecialchars($evt['imagen']) : 'assets/img/logo.png'; 
+                                    ?>
+                                    <img src="<?php echo $imgSrc; ?>" 
+                                         alt="<?php echo htmlspecialchars($evt['titulo']); ?>"
+                                         onerror="this.onerror=null; this.src='assets/img/logo.png';"
+                                         style="width:100%; height:100%; object-fit:cover;">
                                 </div>
                                 <div class="contenido-tarjeta">
                                     <div class="rating"><?php echo date('d/m/Y', strtotime($evt['fecha'])); ?></div>

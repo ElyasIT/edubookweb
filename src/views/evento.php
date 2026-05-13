@@ -17,9 +17,9 @@ if (!$evento) {
     exit;
 }
 
-$userId = $_SESSION['user']['id'] ?? '';
+$userEmail = strtolower(trim($_SESSION['user']['email'] ?? ''));
 $subModel = new Subscription();
-$userEvents = $subModel->getUserEvents($userId);
+$userEvents = $subModel->getUserEvents($userEmail);
 $isSubscribed = false;
 foreach ($userEvents as $ue) {
     if ($ue['id'] === $eventId) {
@@ -70,10 +70,10 @@ foreach ($userEvents as $ue) {
             <section class="card-info-personal" style="max-width: 900px; margin: 0 auto;">
 
                 <div style="text-align: center; margin-bottom: 30px;">
-                    <?php if ($evento['imagen']): ?>
-                        <img src="<?php echo htmlspecialchars($evento['imagen']); ?>" alt="<?php echo htmlspecialchars($evento['titulo']); ?>"
-                            style="max-width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
-                    <?php endif; ?>
+                    <img src="<?php echo !empty($evento['imagen']) ? htmlspecialchars($evento['imagen']) : 'assets/img/logo.png'; ?>" 
+                         alt="<?php echo htmlspecialchars($evento['titulo']); ?>"
+                         onerror="this.onerror=null; this.src='assets/img/logo.png';"
+                         style="max-width: 100%; height: 250px; object-fit: cover; border-radius: 8px; margin-bottom: 20px;">
 
                     <h1 style="color: var(--color-texto); font-size: 2rem; margin-bottom: 10px;"><?php echo htmlspecialchars($evento['titulo']); ?></h1>
                     <p style="color: var(--color-acento); font-size: 1.2rem; font-weight: bold;"><?php echo htmlspecialchars($evento['universidad'] ?: $evento['creador_nombre']); ?></p>
@@ -107,28 +107,39 @@ foreach ($userEvents as $ue) {
                     </p>
                 </div>
 
+                <?php 
+                $rolUsuario = strtolower(trim($_SESSION['user']['rol'] ?? 'explorador'));
+                if ($rolUsuario !== 'manager'): 
+                ?>
                 <div style="display: flex; gap: 15px; flex-wrap: wrap;">
                     <button id="btn-subscribe" class="btn-principal" style="max-width: 250px; <?php echo $isSubscribed ? 'background: #e74c3c; color: white;' : ''; ?>" data-subscribed="<?php echo $isSubscribed ? 'true' : 'false'; ?>">
                         <?php echo $isSubscribed ? 'Cancelar Inscripción' : 'Inscribirme ahora'; ?>
                     </button>
 
-                    <button
+                    <button id="btn-favorite"
                         style="background: transparent; border: 1px solid var(--color-acento); color: var(--color-acento); padding: 14px 20px; border-radius: 5px; font-weight: bold; cursor: pointer;">
                         Guardar en favoritos
                     </button>
                 </div>
+                <?php endif; ?>
 
             </section>
 
         </main>
     </div>
 
+    <!-- SweetAlert2 para notificaciones chulas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
+        <?php if ($rolUsuario !== 'manager'): ?>
+        const eventId = '<?php echo $eventId; ?>';
+        
+        // --- LÓGICA DE SUSCRIPCIONES (n8n) ---
         document.getElementById('btn-subscribe').addEventListener('click', async function() {
             const btn = this;
             const isSubscribed = btn.getAttribute('data-subscribed') === 'true';
             const action = isSubscribed ? 'unsubscribe' : 'subscribe';
-            const eventId = '<?php echo $eventId; ?>';
 
             btn.disabled = true;
             btn.style.opacity = '0.7';
@@ -149,27 +160,70 @@ foreach ($userEvents as $ue) {
                         btn.innerText = 'Cancelar Inscripción';
                         btn.style.background = '#e74c3c';
                         btn.style.color = 'white';
-                        alert('¡Inscrito correctamente! Podrás verlo en tu calendario.');
+                        Swal.fire({
+                            title: '¡Inscrito!',
+                            text: 'Te has apuntado al evento correctamente. Ya puedes verlo en tu calendario.',
+                            icon: 'success',
+                            background: 'var(--color-panel)',
+                            color: 'var(--color-texto)',
+                            confirmButtonColor: 'var(--color-primario)'
+                        });
                     } else {
                         btn.setAttribute('data-subscribed', 'false');
                         btn.innerText = 'Inscribirme ahora';
                         btn.style.background = 'var(--color-primario)';
                         btn.style.color = '#111';
-                        alert('Inscripción cancelada.');
+                        Swal.fire({
+                            title: 'Cancelado',
+                            text: 'Has cancelado tu inscripción al evento.',
+                            icon: 'info',
+                            background: 'var(--color-panel)',
+                            color: 'var(--color-texto)',
+                            confirmButtonColor: 'var(--color-primario)'
+                        });
                     }
                 } else {
-                    alert('Error: ' + (data.message || 'No se pudo completar la acción.'));
+                    Swal.fire({ title: 'Error', text: data.message || 'No se pudo completar la acción.', icon: 'error', background: 'var(--color-panel)', color: 'var(--color-texto)' });
                     btn.innerText = isSubscribed ? 'Cancelar Inscripción' : 'Inscribirme ahora';
                 }
             } catch (error) {
                 console.error(error);
-                alert('Error de conexión.');
+                Swal.fire({ title: 'Error', text: 'Error de conexión. Asegúrate de tener configurado el flujo EduBook - Suscripciones en n8n.', icon: 'error', background: 'var(--color-panel)', color: 'var(--color-texto)' });
                 btn.innerText = isSubscribed ? 'Cancelar Inscripción' : 'Inscribirme ahora';
             } finally {
                 btn.disabled = false;
                 btn.style.opacity = '1';
             }
         });
+
+        // --- LÓGICA DE FAVORITOS (localStorage) ---
+        const btnFav = document.getElementById('btn-favorite');
+        let favoritos = JSON.parse(localStorage.getItem('edubook_favoritos')) || [];
+        
+        if (favoritos.includes(eventId)) {
+            btnFav.innerText = 'Quitar de favoritos';
+            btnFav.style.background = 'var(--color-acento)';
+            btnFav.style.color = '#111';
+        }
+
+        btnFav.addEventListener('click', function() {
+            favoritos = JSON.parse(localStorage.getItem('edubook_favoritos')) || [];
+            if (favoritos.includes(eventId)) {
+                favoritos = favoritos.filter(id => id !== eventId);
+                btnFav.innerText = 'Guardar en favoritos';
+                btnFav.style.background = 'transparent';
+                btnFav.style.color = 'var(--color-acento)';
+                Swal.fire({ title: 'Eliminado', text: 'Evento quitado de tus favoritos', icon: 'info', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, background: 'var(--color-panel)', color: 'var(--color-texto)' });
+            } else {
+                favoritos.push(eventId);
+                btnFav.innerText = 'Quitar de favoritos';
+                btnFav.style.background = 'var(--color-acento)';
+                btnFav.style.color = '#111';
+                Swal.fire({ title: '¡Guardado!', text: 'Evento añadido a tus favoritos', icon: 'success', toast: true, position: 'top-end', timer: 2000, showConfirmButton: false, background: 'var(--color-panel)', color: 'var(--color-texto)' });
+            }
+            localStorage.setItem('edubook_favoritos', JSON.stringify(favoritos));
+        });
+        <?php endif; ?>
     </script>
 </body>
 

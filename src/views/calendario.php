@@ -4,9 +4,9 @@ require_once '../controllers/rbac.php';
 require_once '../models/Subscription.php';
 requireRole('explorador');
 
-$userId = $_SESSION['user']['id'];
+$userEmail = strtolower(trim($_SESSION['user']['email'] ?? ''));
 $subModel = new Subscription();
-$userEvents = $subModel->getUserEvents($userId);
+$userEvents = $subModel->getUserEvents($userEmail);
 
 // Ordenar por fecha (próximos primero)
 usort($userEvents, function($a, $b) {
@@ -73,13 +73,11 @@ usort($userEvents, function($a, $b) {
                         <?php foreach ($userEvents as $evt): ?>
                             <div class="tarjeta-agenda-larga">
                                 <div class="img-agenda">
-                                    <?php if ($evt['imagen']): ?>
-                                        <img src="<?php echo htmlspecialchars($evt['imagen']); ?>" alt="<?php echo htmlspecialchars($evt['titulo']); ?>">
-                                    <?php else: ?>
-                                        <div style="width:100%; height:100%; background:var(--color-fondo-panel); display:flex; align-items:center; justify-content:center;">
-                                            <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="color:var(--color-borde)"><rect x="3" y="3" width="18" height="18" rx="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
-                                        </div>
-                                    <?php endif; ?>
+                                    <?php $imgSrc = !empty($evt['imagen']) ? htmlspecialchars($evt['imagen']) : 'assets/img/logo.png'; ?>
+                                    <img src="<?php echo $imgSrc; ?>" 
+                                         alt="<?php echo htmlspecialchars($evt['titulo']); ?>"
+                                         onerror="this.onerror=null; this.src='assets/img/logo.png';"
+                                         style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="info-agenda">
                                     <span class="hora-agenda"><?php echo date('d/m/Y', strtotime($evt['fecha'])); ?></span>
@@ -100,9 +98,28 @@ usort($userEvents, function($a, $b) {
         </main>
     </div>
 
+    <!-- SweetAlert2 -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
     <script>
         async function cancelarSuscripcion(eventId) {
-            if (!confirm('¿Estás seguro de que quieres cancelar tu inscripción a este evento?')) return;
+            const result = await Swal.fire({
+                title: '¿Cancelar inscripción?',
+                text: "Se borrará este evento de tu calendario",
+                icon: 'warning',
+                showCancelButton: true,
+                background: 'var(--color-panel)',
+                color: 'var(--color-texto)',
+                confirmButtonColor: '#e74c3c',
+                cancelButtonColor: 'transparent',
+                confirmButtonText: 'Sí, cancelar',
+                cancelButtonText: 'No, mantener',
+                customClass: {
+                    cancelButton: 'btn-secundario'
+                }
+            });
+
+            if (!result.isConfirmed) return;
 
             try {
                 const response = await fetch('../controllers/subscription_ajax.php', {
@@ -113,13 +130,22 @@ usort($userEvents, function($a, $b) {
                 const data = await response.json();
                 
                 if (data.status === 'ok') {
-                    location.reload();
+                    Swal.fire({
+                        title: '¡Cancelado!',
+                        text: 'El evento ha sido eliminado de tu calendario.',
+                        icon: 'success',
+                        background: 'var(--color-panel)',
+                        color: 'var(--color-texto)',
+                        confirmButtonColor: 'var(--color-primario)'
+                    }).then(() => {
+                        location.reload();
+                    });
                 } else {
-                    alert('Error: ' + (data.message || 'No se pudo cancelar.'));
+                    Swal.fire({ title: 'Error', text: data.message || 'No se pudo cancelar.', icon: 'error', background: 'var(--color-panel)', color: 'var(--color-texto)' });
                 }
             } catch (err) {
                 console.error(err);
-                alert('Error de conexión.');
+                Swal.fire({ title: 'Error', text: 'Error de conexión con el servidor.', icon: 'error', background: 'var(--color-panel)', color: 'var(--color-texto)' });
             }
         }
     </script>

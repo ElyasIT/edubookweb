@@ -29,27 +29,27 @@ class Subscription
         return ['status' => 'error', 'message' => 'Error en la comunicación con n8n. HTTP Code: ' . $httpCode];
     }
 
-    public function subscribe(string $userId, string $eventId): array
+    public function subscribe(string $userEmail, string $eventId): array
     {
         return $this->sendToN8n(N8N_WEBHOOK_SUBSCRIBE_EVENT, [
-            'user_id' => $userId,
+            'user_email' => $userEmail,
             'event_id' => $eventId,
             'action' => 'subscribe'
         ]);
     }
 
-    public function unsubscribe(string $userId, string $eventId): array
+    public function unsubscribe(string $userEmail, string $eventId): array
     {
         return $this->sendToN8n(N8N_WEBHOOK_UNSUBSCRIBE_EVENT, [
-            'user_id' => $userId,
+            'user_email' => $userEmail,
             'event_id' => $eventId,
             'action' => 'unsubscribe'
         ]);
     }
 
-    public function getUserEvents(string $userId): array
+    public function getUserEvents(string $userEmail): array
     {
-        $ch = curl_init(N8N_WEBHOOK_GET_USER_EVENTS . '?user_id=' . urlencode($userId));
+        $ch = curl_init(N8N_WEBHOOK_GET_USER_EVENTS . '?user_email=' . urlencode($userEmail));
         curl_setopt_array($ch, [
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_HTTPGET => true,
@@ -64,11 +64,35 @@ class Subscription
         $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
         curl_close($ch);
 
+        $eventosSuscritos = [];
         if ($httpCode === 200 && $response) {
             $data = json_decode($response, true);
-            return $data['eventos'] ?? $data ?? [];
+            $inscripciones = $data['eventos'] ?? $data ?? [];
+            
+            // Si devuelve un solo objeto, forzar array
+            if (is_array($inscripciones) && isset($inscripciones['event_id'])) {
+                $inscripciones = [$inscripciones];
+            }
+
+            if (is_array($inscripciones) && count($inscripciones) > 0) {
+                require_once __DIR__ . '/Event.php';
+                $eventModel = new Event();
+                $todosEventos = $eventModel->getAll();
+
+                foreach ($inscripciones as $inscripcion) {
+                    $evId = $inscripcion['event_id'] ?? null;
+                    if ($evId) {
+                        foreach ($todosEventos as $evt) {
+                            if ($evt['id'] === $evId) {
+                                $eventosSuscritos[] = $evt;
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
         }
         
-        return [];
+        return $eventosSuscritos;
     }
 }
