@@ -203,7 +203,6 @@ class UserController
         return $result['data'] ?? ['status' => 'error', 'message' => 'No se pudo procesar el registro.'];
     }
 
-    // LOGOUT
     public function logout(): array
     {
         if (session_status() === PHP_SESSION_NONE)
@@ -211,5 +210,16 @@ class UserController
         session_unset();
         session_destroy();
         return ['status' => 'ok'];
+    }
+
+    // ELIMINAR CUENTA
+    public function deleteAccount(string $email): bool
+    {
+        $result = $this->userModel->deleteAccount(['email' => $email]);
+        if ($result['httpCode'] >= 200 && $result['httpCode'] < 300) {
+            $this->logout();
+            return true;
+        }
+        return false;
     }
 }
