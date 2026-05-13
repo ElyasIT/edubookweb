@@ -45,6 +45,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $mensajeFoto = 'La nueva contraseña debe tener al menos 8 caracteres.';
             $tipoMensaje = 'error';
         }
+    } elseif ($action === 'delete_account') {
+        if ($ctrl->deleteAccount($userEmail)) {
+            header('Location: ../../index.php');
+            exit;
+        } else {
+            $mensajeFoto = 'Error al eliminar la cuenta. Inténtalo más tarde.';
+            $tipoMensaje = 'error';
+        }
     } elseif ($esManager && isset($_FILES['foto_perfil'])) {
         $archivo = $_FILES['foto_perfil'];
         if ($archivo['error'] === UPLOAD_ERR_OK) {
@@ -301,6 +309,7 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
                             <a href="#" id="btn-abrir-modal-pass">Cambiar contraseña</a>
                             <a href="#">Privacidad y seguridad</a>
                             <a href="#">Conectar calendario</a>
+                            <a href="#" id="btn-abrir-modal-delete" style="color: #ff4d4d;">Darse de baja</a>
                             <a href="../controllers/logout.php" class="enlace-logout">
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                     stroke-width="2">
@@ -409,6 +418,39 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
             btnCancelarPass.addEventListener('click', () => modalPass.classList.remove('activo'));
         }
         modalPass.addEventListener('click', e => { if (e.target === modalPass) modalPass.classList.remove('activo'); });
+    </script>
+
+    <!-- MODAL BORRAR CUENTA -->
+    <div class="modal-overlay" id="modal-delete">
+        <div class="modal-foto" style="max-width: 400px; text-align: center;">
+            <h3 style="color: #ff4d4f;">¿Borrar Cuenta?</h3>
+            <p>Esta acción es irreversible. Se eliminarán todos tus datos y suscripciones.</p>
+
+            <form action="profile.php" method="POST" style="margin-top: 20px;">
+                <input type="hidden" name="action" value="delete_account">
+                <div class="modal-acciones">
+                    <button type="button" class="btn-cancelar-modal" id="btn-cancelar-delete">Cancelar</button>
+                    <button type="submit" class="btn-principal" style="flex:1; background: #ff4d4f; border-color: #ff4d4f;">Sí, borrar cuenta</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const modalDelete = document.getElementById('modal-delete');
+        const btnAbrirDelete = document.getElementById('btn-abrir-modal-delete');
+        const btnCancelarDelete = document.getElementById('btn-cancelar-delete');
+
+        if (btnAbrirDelete) {
+            btnAbrirDelete.addEventListener('click', (e) => {
+                e.preventDefault();
+                modalDelete.classList.add('activo');
+            });
+        }
+        if (btnCancelarDelete) {
+            btnCancelarDelete.addEventListener('click', () => modalDelete.classList.remove('activo'));
+        }
+        modalDelete.addEventListener('click', e => { if (e.target === modalDelete) modalDelete.classList.remove('activo'); });
     </script>
 
 </body>

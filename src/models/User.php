@@ -77,4 +77,9 @@ class User
     {
         return $this->sendToN8n(N8N_WEBHOOK_UPDATE_PASSWORD, $data);
     }
+
+    public function deleteAccount($data)
+    {
+        return $this->sendToN8n(N8N_WEBHOOK_DELETE_USER, $data);
+    }
 }

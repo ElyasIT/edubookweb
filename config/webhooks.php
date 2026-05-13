@@ -12,6 +12,7 @@ define('N8N_WEBHOOK_UNSUBSCRIBE_EVENT', 'https://n8n.kairasystems.com/webhook/ed
 define('N8N_WEBHOOK_GET_USER_EVENTS', 'https://n8n.kairasystems.com/webhook/edubook/user/events'); // Issue 3
 define('N8N_WEBHOOK_UPDATE_PROFILE', 'https://n8n.kairasystems.com/webhook/edubook/user/profile'); // Issue 4
 define('N8N_WEBHOOK_UPDATE_PASSWORD', 'https://n8n.kairasystems.com/webhook/edubook/user/password'); // Issue 4
+define('N8N_WEBHOOK_DELETE_USER', 'https://n8n.kairasystems.com/webhook/edubook/user/delete'); // Issue 5
 define('N8N_SECRET', 'EDUBOOK');
 define('ALLOWED_ORIGIN', '*');
 ?>
