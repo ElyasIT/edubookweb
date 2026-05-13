@@ -67,4 +67,14 @@ class User
     {
         return $this->sendToN8n(N8N_WEBHOOK_LOGIN, $data);
     }
+
+    public function updateProfile($data)
+    {
+        return $this->sendToN8n(N8N_WEBHOOK_UPDATE_PROFILE, $data);
+    }
+
+    public function updatePassword($data)
+    {
+        return $this->sendToN8n(N8N_WEBHOOK_UPDATE_PASSWORD, $data);
+    }
 }
