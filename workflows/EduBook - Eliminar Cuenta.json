@@ -1,0 +1,138 @@
+{
+  "name": "EduBook - Eliminar Cuenta",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "edubook/user/delete",
+        "authentication": "headerAuth",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook-delete-user",
+      "name": "Webhook Delete User",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        0,
+        0
+      ],
+      "webhookId": "edubook-delete-user",
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "mSoagAW1OTV1tRey",
+          "name": "EduBook-PHP-Secret"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/auth/v1/admin/users/' + $json.body.user_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {}
+      },
+      "id": "supabase-delete-user-api",
+      "name": "Supabase Delete User Auth",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        250,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "LCXteM20UPGBNwED",
+          "name": "Edubook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "DELETE",
+        "url": "={{ 'https://vibsrorignwbcwqbuten.supabase.co/rest/v1/perfiles?id=eq.' + $('Webhook Delete User').first().json.body.user_id }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "supabaseApi",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "id": "supabase-delete-profile",
+      "name": "Supabase Delete Perfil",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        450,
+        0
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "LCXteM20UPGBNwED",
+          "name": "Edubook"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ok\",\n  \"message\": \"Cuenta eliminada correctamente\"\n}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "respuesta-ok-delete",
+      "name": "Respuesta OK",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        650,
+        0
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook Delete User": {
+      "main": [
+        [
+          {
+            "node": "Supabase Delete User Auth",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Delete User Auth": {
+      "main": [
+        [
+          {
+            "node": "Supabase Delete Perfil",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Supabase Delete Perfil": {
+      "main": [
+        [
+          {
+            "node": "Respuesta OK",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  }
+}

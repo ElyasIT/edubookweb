@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 require_once '../controllers/auth_protect.php';
 require_once '../controllers/UserController.php';
 
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     } elseif ($action === 'delete_account') {
         if ($ctrl->deleteAccount($userEmail)) {
-            header('Location: ../../index.php');
+            header('Location: login.php');
             exit;
         } else {
             $mensajeFoto = 'Error al eliminar la cuenta. Inténtalo más tarde.';
@@ -436,13 +436,17 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
     <div class="modal-overlay" id="modal-delete">
         <div class="modal-foto" style="max-width: 400px; text-align: center;">
             <h3 style="color: #ff4d4f;">¿Borrar Cuenta?</h3>
-            <p>Esta acción es irreversible. Se eliminarán todos tus datos y suscripciones.</p>
+            <p>Esta acción es irreversible. Se eliminarán todos tus datos, eventos creados y suscripciones de forma permanente.</p>
 
-            <form action="profile.php" method="POST" style="margin-top: 20px;">
+            <form action="profile.php" method="POST" style="margin-top: 20px;" id="form-delete-account">
                 <input type="hidden" name="action" value="delete_account">
+                <div style="margin-bottom: 20px; text-align: left;">
+                    <label style="display:block; margin-bottom:8px; color:var(--color-texto-gris); font-size:0.9rem;">Para confirmar, escribe "ELIMINAR" (en mayúsculas)</label>
+                    <input type="text" id="confirm-delete-text" required autocomplete="off" style="width:100%; padding:12px; border-radius:6px; border:1px solid var(--color-borde); background:rgba(255,255,255,0.05); color:#fff; text-align:center;">
+                </div>
                 <div class="modal-acciones">
                     <button type="button" class="btn-cancelar-modal" id="btn-cancelar-delete">Cancelar</button>
-                    <button type="submit" class="btn-principal" style="flex:1; background: #ff4d4f; border-color: #ff4d4f;">Sí, borrar cuenta</button>
+                    <button type="submit" class="btn-principal" id="btn-submit-delete" style="flex:1; background: #ff4d4f; border-color: #ff4d4f; opacity: 0.5; pointer-events: none;">Sí, borrar cuenta</button>
                 </div>
             </form>
         </div>
@@ -452,17 +456,32 @@ $avatarSrc = $_SESSION['user']['avatar'] ?? '';
         const modalDelete = document.getElementById('modal-delete');
         const btnAbrirDelete = document.getElementById('btn-abrir-modal-delete');
         const btnCancelarDelete = document.getElementById('btn-cancelar-delete');
+        const confirmDeleteText = document.getElementById('confirm-delete-text');
+        const btnSubmitDelete = document.getElementById('btn-submit-delete');
 
         if (btnAbrirDelete) {
             btnAbrirDelete.addEventListener('click', (e) => {
                 e.preventDefault();
                 modalDelete.classList.add('activo');
+                confirmDeleteText.value = '';
+                btnSubmitDelete.style.opacity = '0.5';
+                btnSubmitDelete.style.pointerEvents = 'none';
             });
         }
         if (btnCancelarDelete) {
             btnCancelarDelete.addEventListener('click', () => modalDelete.classList.remove('activo'));
         }
         modalDelete.addEventListener('click', e => { if (e.target === modalDelete) modalDelete.classList.remove('activo'); });
+
+        confirmDeleteText.addEventListener('input', (e) => {
+            if (e.target.value === 'ELIMINAR') {
+                btnSubmitDelete.style.opacity = '1';
+                btnSubmitDelete.style.pointerEvents = 'auto';
+            } else {
+                btnSubmitDelete.style.opacity = '0.5';
+                btnSubmitDelete.style.pointerEvents = 'none';
+            }
+        });
     </script>
 
 </body>

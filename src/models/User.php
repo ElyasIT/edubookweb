@@ -38,7 +38,7 @@ class User
         if ($httpCode === 404 || !$response) {
             return [
                 'httpCode' => 404,
-                'data' => ['status' => 'error', 'message' => 'Datos incorrectos o usuario no registrado.']
+                'data' => ['status' => 'error', 'message' => 'Servicio no disponible.']
             ];
         }
 
@@ -48,7 +48,7 @@ class User
         if (json_last_error() !== JSON_ERROR_NONE) {
             return [
                 'httpCode' => 502,
-                'data' => ['status' => 'error', 'message' => 'Datos incorrectos o usuario no registrado.']
+                'data' => ['status' => 'error', 'message' => 'Respuesta inválida del servidor.']
             ];
         }
 
@@ -70,6 +70,20 @@ class User
 
     public function updateProfile($data)
     {
+        // Guardar también en users_data.json por si necesitamos leer localmente
+        $email = strtolower(trim($data['user_email'] ?? ''));
+        if ($email) {
+            $usersDataFile = __DIR__ . '/../../data/users_data.json';
+            $usersData = file_exists($usersDataFile) ? json_decode(file_get_contents($usersDataFile), true) : [];
+            if (!isset($usersData[$email])) $usersData[$email] = [];
+            foreach ($data as $k => $v) {
+                if ($k !== 'user_email' && $k !== 'user_id') {
+                    $usersData[$email][$k] = $v;
+                }
+            }
+            file_put_contents($usersDataFile, json_encode($usersData, JSON_PRETTY_PRINT));
+        }
+
         return $this->sendToN8n(N8N_WEBHOOK_UPDATE_PROFILE, $data);
     }
 
@@ -80,6 +94,52 @@ class User
 
     public function deleteAccount($data)
     {
+        $email = strtolower(trim($data['email']));
+        $userId = $data['user_id'] ?? md5($email);
+        
+        // 1. Eliminar de users_data.json
+        $usersDataFile = __DIR__ . '/../../data/users_data.json';
+        if (file_exists($usersDataFile)) {
+            $usersData = json_decode(file_get_contents($usersDataFile), true);
+            if (isset($usersData[$email])) {
+                unset($usersData[$email]);
+                file_put_contents($usersDataFile, json_encode($usersData, JSON_PRETTY_PRINT));
+            }
+        }
+        
+        // 2. Eliminar de roles.json
+        $rolesFile = __DIR__ . '/../../data/roles.json';
+        if (file_exists($rolesFile)) {
+            $roles = json_decode(file_get_contents($rolesFile), true);
+            if (isset($roles[$email])) {
+                unset($roles[$email]);
+                file_put_contents($rolesFile, json_encode($roles, JSON_PRETTY_PRINT));
+            }
+        }
+
+        // 3. Borrado en cascada de Eventos creados por este usuario
+        $eventsFile = __DIR__ . '/../../data/events.json';
+        if (file_exists($eventsFile)) {
+            $events = json_decode(file_get_contents($eventsFile), true);
+            if (is_array($events)) {
+                $eventsRestantes = array_filter($events, function($e) use ($userId) {
+                    return ($e['creador_id'] ?? '') !== $userId;
+                });
+                file_put_contents($eventsFile, json_encode(array_values($eventsRestantes), JSON_PRETTY_PRINT));
+            }
+        }
+
+        // 4. Borrar de suscripciones
+        $subsFile = __DIR__ . '/../../data/subscriptions.json';
+        if (file_exists($subsFile)) {
+            $subs = json_decode(file_get_contents($subsFile), true);
+            if (isset($subs[$email])) {
+                unset($subs[$email]);
+                file_put_contents($subsFile, json_encode($subs, JSON_PRETTY_PRINT));
+            }
+        }
+
+        // 5. Borrar de Supabase usando n8n
         return $this->sendToN8n(N8N_WEBHOOK_DELETE_USER, $data);
     }
 }

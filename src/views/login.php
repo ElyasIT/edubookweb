@@ -13,6 +13,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $rawInput = file_get_contents('php://input');
     $data = json_decode($rawInput, true);
 
+    // Recuperar contraseña
+    if (isset($data['action']) && $data['action'] === 'recover_password') {
+        if (empty($data['email']) || empty($data['password'])) {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Faltan datos.']);
+            exit;
+        }
+        $controller = new UserController();
+        if ($controller->changePassword($data['email'], $data['password'])) {
+            http_response_code(200);
+            echo json_encode(['status' => 'ok', 'message' => 'Contraseña cambiada.']);
+        } else {
+            http_response_code(400);
+            echo json_encode(['status' => 'error', 'message' => 'Error al cambiar la contraseña.']);
+        }
+        exit;
+    }
+
     if (!$data || !isset($data['email']) || !isset($data['password'])) {
         http_response_code(400);
         echo json_encode([
@@ -133,8 +151,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div id="forgot-password-modal" style="display:none;">
         <div class="modal-content" id="modal-inner">
             <h3>Recuperar contraseña</h3>
-            <p>Contacta con el administrador del sistema para restablecer tu contraseña.</p>
-            <button type="button" class="btn-principal" id="close-modal-btn">De acuerdo</button>
+            <p style="margin-bottom: 15px;">Introduce tu correo y la nueva contraseña que deseas establecer.</p>
+            
+            <form id="form-recover-password" style="text-align: left;">
+                <div class="grupo-input" style="margin-bottom: 10px;">
+                    <label style="display:block; margin-bottom:5px;">Correo electrónico</label>
+                    <input type="email" id="recover-email" required style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--color-borde); background:var(--bg-input); color:#fff;" placeholder="ejemplo@universidad.edu">
+                </div>
+                <div class="grupo-input" style="margin-bottom: 20px;">
+                    <label style="display:block; margin-bottom:5px;">Nueva contraseña</label>
+                    <input type="password" id="recover-password" required minlength="8" style="width:100%; padding:10px; border-radius:6px; border:1px solid var(--color-borde); background:var(--bg-input); color:#fff;" placeholder="••••••••">
+                </div>
+                <div id="recover-msg" style="margin-bottom: 15px; font-size: 0.9rem;"></div>
+                <div style="display:flex; gap:10px;">
+                    <button type="button" class="btn-secundario" id="close-modal-btn" style="flex:1;">Cancelar</button>
+                    <button type="submit" class="btn-principal" id="btn-submit-recover" style="flex:1;">Actualizar</button>
+                </div>
+            </form>
         </div>
     </div>
 
@@ -154,6 +187,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             // 2. Modal con fondo transparente
             $('.enlace-olvido').on('click', function (e) {
                 e.preventDefault();
+                $('#recover-email').val($('#email-l').val()); // Autocompletar si ya escribió
+                $('#recover-msg').html('');
                 $('#forgot-password-modal').css('display', 'flex');
             });
 
@@ -165,6 +200,40 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
             $('#close-modal-btn').on('click', function () {
                 $('#forgot-password-modal').hide();
+            });
+
+            // Enviar recuperación de contraseña
+            $('#form-recover-password').on('submit', function (e) {
+                e.preventDefault();
+                const email = $('#recover-email').val();
+                const password = $('#recover-password').val();
+                
+                $('#recover-msg').html('<span style="color:var(--color-primario);">Actualizando...</span>');
+                $('#btn-submit-recover').prop('disabled', true);
+
+                fetch('login.php', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ action: 'recover_password', email: email, password: password })
+                })
+                .then(res => res.json())
+                .then(data => {
+                    if (data.status === 'ok') {
+                        $('#recover-msg').html('<span style="color:#4caf50;">¡Contraseña actualizada correctamente!</span>');
+                        setTimeout(() => {
+                            $('#forgot-password-modal').hide();
+                            $('#password-l').val(password); // autocompletar para q inicie sesion
+                        }, 2000);
+                    } else {
+                        $('#recover-msg').html('<span style="color:#ff4d4f;">' + data.message + '</span>');
+                    }
+                })
+                .catch(err => {
+                    $('#recover-msg').html('<span style="color:#ff4d4f;">Error de conexión.</span>');
+                })
+                .finally(() => {
+                    $('#btn-submit-recover').prop('disabled', false);
+                });
             });
 
             // 3. Lógica del Aviso de Cookies

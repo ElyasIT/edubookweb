@@ -81,8 +81,8 @@ Este proyecto ha sido adaptado para cumplir con los requerimientos de la **Prác
 ### 1. CRUD de Usuario (4 puntos)
 *   **Create & Read (Login/Registro):** Funcionales vía webhooks hacia Supabase Auth.
 *   **Update (Actualizar datos):** Los usuarios pueden modificar su información personal desde la vista de Perfil.
-*   **Update (Cambiar Password):** Integrado en el panel de seguridad del perfil del usuario.
-*   **Delete (Darse de baja):** El usuario puede eliminar su cuenta definitivamente (borrado en cascada gestionado).
+*   **Update (Cambiar Password):** Integrado en el panel de seguridad del perfil del usuario y en la pantalla de login (funcionalidad de "Olvidaste tu contraseña").
+*   **Delete (Darse de baja):** El usuario puede eliminar su cuenta definitivamente (borrado en cascada gestionado con API de administrador).
 
 ### 2. CRUD Específico del Proyecto — Eventos (4 puntos)
 *   **Create (Crear):** Los usuarios con rol `Manager` pueden crear y publicar nuevos eventos (`crear_evento.php`).
@@ -291,6 +291,8 @@ sequenceDiagram
  ├── 📂 workflows/                 ← Backups de flujos n8n para importar
  │   ├── 📜 EduBook - Login.json    ← Lee user_metadata de Supabase; valida por access_token
  │   ├── 📜 EduBook - Registro.json ← Detecta email ya registrado en español
+ │   ├── 📜 EduBook - Actualizar Password.json ← Busca UUID por email y actualiza contraseña
+ │   ├── 📜 EduBook - Eliminar Cuenta.json     ← Elimina usuario permanentemente vía Admin API
  │   └── 📜 EduBook - Chatbot.json  ← Workflow del asistente virtual con prompt del proyecto
  │
  └── 📜 README.md

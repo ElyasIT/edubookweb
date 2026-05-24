@@ -24,7 +24,7 @@ function requireRole($requiredRole)
     }
 
     if ($userRol !== $required) {
-        header('Location: index.php');
+        header('Location: calendario.php');
         exit;
     }
 }

@@ -35,10 +35,11 @@ class UserController
     // CAMBIAR CONTRASEÑA
     public function changePassword(string $email, string $newPassword): bool
     {
-        $hash = password_hash($newPassword, PASSWORD_DEFAULT);
+        $userId = $_SESSION['user']['id'] ?? md5(strtolower(trim($email)));
         $result = $this->userModel->updatePassword([
             'email' => $email,
-            'password_hash' => $hash
+            'password' => $newPassword,
+            'user_id' => $userId
         ]);
 
         return ($result['httpCode'] >= 200 && $result['httpCode'] < 300);
@@ -157,7 +158,8 @@ class UserController
     // ELIMINAR CUENTA
     public function deleteAccount(string $email): bool
     {
-        $result = $this->userModel->deleteAccount(['email' => $email]);
+        $userId = $_SESSION['user']['id'] ?? md5(strtolower(trim($email)));
+        $result = $this->userModel->deleteAccount(['email' => $email, 'user_id' => $userId]);
         if ($result['httpCode'] >= 200 && $result['httpCode'] < 300) {
             $this->logout();
             return true;
