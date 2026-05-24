@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once '../controllers/auth_protect.php';
 require_once '../controllers/rbac.php';
 require_once '../models/Event.php';
@@ -15,7 +15,7 @@ $todosEventos = $eventModel->getAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Mis Favoritos - EduBook</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/style.css?v=<?php echo time(); ?>">
     <style>
         /* Ocultar por defecto para evitar parpadeos hasta que JS decida */
         .tarjeta-evento { display: none; }
@@ -97,6 +97,7 @@ $todosEventos = $eventModel->getAll();
                 </div>
             </section>
 
+            <?php include 'partials/footer.php'; ?>
         </main>
     </div>
 

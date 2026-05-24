@@ -296,6 +296,7 @@ $eventosRecientes = $eventModel->getRecent(3);
                 </div>
             </section>
 
+            <?php include 'partials/footer.php'; ?>
         </main>
     </div>
 

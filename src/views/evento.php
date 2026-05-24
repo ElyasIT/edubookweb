@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once '../controllers/auth_protect.php';
 require_once '../models/Event.php';
 require_once '../models/Subscription.php';
@@ -35,7 +35,7 @@ foreach ($userEvents as $ue) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detalle Evento - EduBook</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/style.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -125,6 +125,7 @@ foreach ($userEvents as $ue) {
 
             </section>
 
+            <?php include 'partials/footer.php'; ?>
         </main>
     </div>
 

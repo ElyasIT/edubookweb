@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once '../controllers/auth_protect.php';
 require_once '../models/Event.php';
 
@@ -16,7 +16,7 @@ $todosEventos = $eventModel->getAll();
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Buscar - EduBook</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/style.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -148,7 +148,7 @@ $todosEventos = $eventModel->getAll();
                     </p>
                 </section>
             </div>
-
+            <?php include 'partials/footer.php'; ?>
         </main>
     </div>
 

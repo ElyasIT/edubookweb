@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 require_once '../controllers/auth_protect.php';
 require_once '../controllers/rbac.php';
 require_once '../models/Subscription.php';
@@ -9,7 +9,7 @@ $subModel = new Subscription();
 $userEvents = $subModel->getUserEvents($userEmail);
 
 // Ordenar por fecha (próximos primero)
-usort($userEvents, function($a, $b) {
+usort($userEvents, function ($a, $b) {
     return strtotime($a['fecha']) - strtotime($b['fecha']);
 });
 ?>
@@ -20,7 +20,7 @@ usort($userEvents, function($a, $b) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calendario - EduBook</title>
-    <link rel="stylesheet" href="assets/style.css">
+    <link rel="stylesheet" href="assets/style.css?v=<?php echo time(); ?>">
 </head>
 
 <body>
@@ -39,13 +39,14 @@ usort($userEvents, function($a, $b) {
                 <div class="perfil-usuario">
                     <span
                         class="nombre-corto"><?php echo htmlspecialchars($_SESSION['user']['nombre'] ?? 'Usuario'); ?></span>
-                    <?php 
+                    <?php
                     $navUserName = $_SESSION['user']['nombre'] ?? 'Usuario';
                     $navAvatar = $_SESSION['user']['avatar'] ?? '';
                     ?>
                     <div class="avatar-circulo" <?php echo !$navAvatar ? 'style="background:var(--color-acento);color:#111;font-weight:bold;"' : 'style="background:transparent;border:1px solid var(--color-borde);padding:0;overflow:hidden;"'; ?>>
                         <?php if ($navAvatar): ?>
-                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar" style="width:100%;height:100%;object-fit:cover;">
+                            <img src="<?php echo htmlspecialchars($navAvatar); ?>" alt="Avatar"
+                                style="width:100%;height:100%;object-fit:cover;">
                         <?php else: ?>
                             <?php echo strtoupper(substr($navUserName, 0, 1)); ?>
                         <?php endif; ?>
@@ -66,7 +67,8 @@ usort($userEvents, function($a, $b) {
                         </svg>
                         <p>No estás inscrito a ningún evento.</p>
                         <a href="buscar.php" class="btn-principal"
-                            style="display:inline-block;margin-top:16px;text-decoration:none;padding:11px 22px;">Buscar eventos</a>
+                            style="display:inline-block;margin-top:16px;text-decoration:none;padding:11px 22px;">Buscar
+                            eventos</a>
                     </div>
                 <?php else: ?>
                     <div class="lista-vertical">
@@ -74,10 +76,9 @@ usort($userEvents, function($a, $b) {
                             <div class="tarjeta-agenda-larga">
                                 <div class="img-agenda">
                                     <?php $imgSrc = !empty($evt['imagen']) ? htmlspecialchars($evt['imagen']) : 'assets/img/logo.png'; ?>
-                                    <img src="<?php echo $imgSrc; ?>" 
-                                         alt="<?php echo htmlspecialchars($evt['titulo']); ?>"
-                                         onerror="this.onerror=null; this.src='assets/img/logo.png';"
-                                         style="width:100%;height:100%;object-fit:cover;">
+                                    <img src="<?php echo $imgSrc; ?>" alt="<?php echo htmlspecialchars($evt['titulo']); ?>"
+                                        onerror="this.onerror=null; this.src='assets/img/logo.png';"
+                                        style="width:100%;height:100%;object-fit:cover;">
                                 </div>
                                 <div class="info-agenda">
                                     <span class="hora-agenda"><?php echo date('d/m/Y', strtotime($evt['fecha'])); ?></span>
@@ -85,8 +86,11 @@ usort($userEvents, function($a, $b) {
                                     <p><?php echo htmlspecialchars($evt['universidad'] ?: $evt['creador_nombre']); ?></p>
                                 </div>
                                 <div class="acciones-agenda">
-                                    <a href="evento.php?id=<?php echo urlencode($evt['id']); ?>" class="btn-detalles">Ver Detalles</a>
-                                    <button class="btn-borrar" onclick="cancelarSuscripcion('<?php echo htmlspecialchars($evt['id']); ?>')">Borrar de calendario</button>
+                                    <a href="evento.php?id=<?php echo urlencode($evt['id']); ?>" class="btn-detalles">Ver
+                                        Detalles</a>
+                                    <button class="btn-borrar"
+                                        onclick="cancelarSuscripcion('<?php echo htmlspecialchars($evt['id']); ?>')">Borrar de
+                                        calendario</button>
                                 </div>
                             </div>
                         <?php endforeach; ?>
@@ -95,6 +99,7 @@ usort($userEvents, function($a, $b) {
 
             </section>
 
+            <?php include 'partials/footer.php'; ?>
         </main>
     </div>
 
@@ -128,7 +133,7 @@ usort($userEvents, function($a, $b) {
                     body: JSON.stringify({ action: 'unsubscribe', event_id: eventId })
                 });
                 const data = await response.json();
-                
+
                 if (data.status === 'ok') {
                     Swal.fire({
                         title: '¡Cancelado!',
