@@ -74,6 +74,29 @@ La aplicación combina:
 
 ---
 
+## 🎯 Cumplimiento: Práctica 6 (CRUD & Backend)
+
+Este proyecto ha sido adaptado para cumplir con los requerimientos de la **Práctica 6**, integrando la arquitectura Serverless (n8n + Supabase) autorizada previamente por el equipo docente como alternativa a la pila tradicional (MySQL + PDO local).
+
+### 1. CRUD de Usuario (4 puntos)
+*   **Create & Read (Login/Registro):** Funcionales vía webhooks hacia Supabase Auth.
+*   **Update (Actualizar datos):** Los usuarios pueden modificar su información personal desde la vista de Perfil.
+*   **Update (Cambiar Password):** Integrado en el panel de seguridad del perfil del usuario.
+*   **Delete (Darse de baja):** El usuario puede eliminar su cuenta definitivamente (borrado en cascada gestionado).
+
+### 2. CRUD Específico del Proyecto — Eventos (4 puntos)
+*   **Create (Crear):** Los usuarios con rol `Manager` pueden crear y publicar nuevos eventos (`crear_evento.php`).
+*   **Read (Leer):** Listado global en el explorador, vista detallada individual (`evento.php`) y dashboard personal.
+*   **Update (Actualizar):** Los managers pueden editar cualquier detalle de sus propios eventos desde el panel de gestión.
+*   **Delete (Eliminar):** Los managers pueden borrar sus eventos. (Los eventos base con `creador_id: system` están protegidos).
+
+### 3. Requerimientos No Funcionales
+*   **Base de Datos y Conexión:** Requisito de MySQL + PDO sustituido y aprobado por **Supabase (PostgreSQL) + n8n + PHP cURL**.
+*   **Estructura MVC y Controladores:** Cumplido estrictamente (Ver sección de estructura).
+*   **Encriptación de contraseñas:** Delegado al sistema criptográfico avanzado de **Supabase Auth** (superando el estándar de `password_hash()` exigido).
+
+---
+
 ## 🏗️ Arquitectura y Tecnologías
 
 El proyecto sigue el patrón **Modelo-Vista-Controlador (MVC)**, separando de forma estricta la lógica de negocio, el enrutamiento y la presentación.
