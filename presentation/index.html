@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduBook - Project Presentation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ── VARIABLES FROM YOUR WEBSITE ── */
+        :root {
+            --color-fondo: #0F2D3C;
+            --color-sidebar: #0A1F29;
+            --color-panel: rgba(19, 50, 64, 0.7);
+            /* Glassmorphism panel */
+            --color-borde: rgba(42, 95, 117, 0.5);
+            --color-acento: #A69B5D;
+            --color-texto: #FFFFFF;
+            --color-texto-gris: #B0BEC5;
+            --glass-blur: blur(12px);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--color-fondo);
+            color: var(--color-texto);
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            width: 100vw;
+        }
+
+        /* Dynamic Background */
+        .presentation-container {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            background: linear-gradient(135deg, #0a1f29 0%, #0f2d3c 100%);
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+        }
+
+        /* Animated Floating Orbs for "Premium" look */
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            opacity: 0.5;
+            animation: float 20s infinite ease-in-out alternate;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: rgba(166, 155, 93, 0.15);
+            /* Acento */
+            top: -10%;
+            left: -10%;
+            animation-delay: 0s;
+        }
+
+        .orb-2 {
+            width: 600px;
+            height: 600px;
+            background: rgba(42, 95, 117, 0.2);
+            /* Borde */
+            bottom: -20%;
+            right: -10%;
+            animation-delay: -5s;
+        }
+
+        .orb-3 {
+            width: 400px;
+            height: 400px;
+            background: rgba(19, 50, 64, 0.4);
+            top: 40%;
+            left: 40%;
+            animation-delay: -10s;
+            animation-duration: 25s;
+        }
+
+        @keyframes float {
+            0% {
+                transform: translate(0, 0) scale(1);
+            }
+
+            100% {
+                transform: translate(50px, 50px) scale(1.1);
+            }
+        }
+
+        .slide {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            padding: 4rem 6rem;
+            display: flex;
+            flex-direction: column;
+            opacity: 0;
+            transition: opacity 0.6s ease-in-out, transform 0.6s cubic-bezier(0.25, 0.8, 0.25, 1);
+            transform: translateY(40px) scale(0.95);
+            z-index: 1;
+        }
+
+        .slide.active {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            z-index: 10;
+        }
+
+        .slide.previous {
+            opacity: 0;
+            transform: translateY(-40px) scale(0.95);
+        }
+
+        /* Title Slide styling */
+        .slide-title-slide {
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .slide-title-slide h1 {
+            font-size: 7rem;
+            margin-bottom: 1rem;
+            color: var(--color-acento);
+            text-shadow: 0 4px 20px rgba(0, 0, 0, 0.6);
+            letter-spacing: 3px;
+        }
+
+        .slide-title-slide h2 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            color: var(--color-texto);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo-placeholder {
+            font-size: 6rem;
+            color: var(--color-acento);
+            margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px rgba(166, 155, 93, 0.4));
+            animation: pulse 3s infinite ease-in-out;
+        }
+
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Generic slide styling */
+        h2.slide-header {
+            font-size: 3.5rem;
+            color: var(--color-texto);
+            margin-bottom: 2.5rem;
+            border-bottom: 4px solid var(--color-acento);
+            padding-bottom: 0.5rem;
+            display: inline-block;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.4);
+            position: relative;
+            z-index: 2;
+        }
+
+        .content {
+            font-size: 1.5rem;
+            line-height: 1.6;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 2rem;
+            color: var(--color-texto-gris);
+            position: relative;
+            z-index: 2;
+        }
+
+        ul {
+            list-style-type: none;
+            padding-left: 0;
+        }
+
+        ul li {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+            color: var(--color-texto);
+            font-size: 1.6rem;
+        }
+
+        ul li i {
+            color: var(--color-acento);
+            position: absolute;
+            left: 0;
+            top: 0.3rem;
+            font-size: 1.6rem;
+        }
+
+        .grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            width: 100%;
+            max-width: 1200px;
+        }
+
+        /* Glassmorphism Cards */
+        .card {
+            background: var(--color-panel);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            padding: 3rem;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
+            border: 1px solid var(--color-borde);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            border-left: 1px solid rgba(255, 255, 255, 0.1);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), border-color 0.4s, box-shadow 0.4s;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        .card:hover {
+            transform: translateY(-10px);
+            border-color: var(--color-acento);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 20px rgba(166, 155, 93, 0.2);
+        }
+
+        .card h3 {
+            color: var(--color-acento);
+            margin-bottom: 1.5rem;
+            font-size: 2.2rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .highlight {
+            color: var(--color-acento);
+            font-weight: bold;
+        }
+
+        /* Team Photos */
+        .team-container {
+            display: flex;
+            justify-content: center;
+            gap: 6rem;
+            margin-top: 1rem;
+        }
+
+        .team-member {
+            text-align: center;
+            transition: transform 0.3s;
+        }
+
+        .team-member:hover {
+            transform: scale(1.05);
+        }
+
+        .team-photo {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 6px solid var(--color-acento);
+            margin-bottom: 1.5rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .team-member h4 {
+            color: var(--color-texto);
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .team-member p {
+            color: var(--color-texto-gris);
+            font-size: 1.3rem;
+            background: rgba(0, 0, 0, 0.2);
+            padding: 8px 15px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* Controls */
+        .controls {
+            position: absolute;
+            bottom: 2.5rem;
+            right: 3rem;
+            z-index: 100;
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .btn {
+            background: rgba(10, 31, 41, 0.8);
+            backdrop-filter: blur(5px);
+            color: var(--color-texto);
+            border: 1px solid var(--color-acento);
+            padding: 1rem 2rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn:hover:not(:disabled) {
+            background: var(--color-acento);
+            color: var(--color-fondo);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(166, 155, 93, 0.4);
+        }
+
+        .btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+            border-color: var(--color-borde);
+        }
+
+        /* Progress bar */
+        .progress-bar-container {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 8px;
+            background: rgba(10, 31, 41, 0.5);
+            z-index: 100;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #A69B5D, #d4c784);
+            transition: width 0.4s cubic-bezier(0.25, 0.8, 0.25, 1);
+            box-shadow: 0 0 15px rgba(166, 155, 93, 0.6);
+            border-radius: 0 4px 4px 0;
+        }
+
+        /* IFRAME Container */
+        .iframe-container {
+            width: 100%;
+            height: 100%;
+            flex: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            border: 3px solid var(--color-acento);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6), 0 0 20px rgba(166, 155, 93, 0.2);
+            position: relative;
+        }
+
+        .iframe-container iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            background-color: white;
+        }
+
+        .iframe-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 31, 41, 0.85);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 10;
+            transition: opacity 0.4s;
+            backdrop-filter: blur(8px);
+        }
+
+        .iframe-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .btn-launch {
+            background: var(--color-acento);
+            color: var(--color-fondo);
+            padding: 1.5rem 3.5rem;
+            font-size: 1.6rem;
+            font-weight: bold;
+            border-radius: 50px;
+            border: none;
+            cursor: pointer;
+            transition: transform 0.3s, box-shadow 0.3s;
+            box-shadow: 0 8px 25px rgba(166, 155, 93, 0.5);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-launch:hover {
+            transform: scale(1.08) translateY(-5px);
+            box-shadow: 0 12px 30px rgba(166, 155, 93, 0.7);
+        }
+
+        /* Badges for Tech Stack */
+        .tech-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 20px;
+            border-radius: 30px;
+            background: rgba(166, 155, 93, 0.15);
+            border: 1px solid var(--color-acento);
+            color: var(--color-texto);
+            font-size: 1.2rem;
+            margin: 8px;
+            transition: transform 0.2s, background 0.2s;
+        }
+
+        .tech-badge:hover {
+            transform: translateY(-3px);
+            background: rgba(166, 155, 93, 0.3);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="presentation-container">
+        <!-- Background Animations -->
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+
+        <!-- 1. Title Slide -->
+        <div class="slide active" id="slide-1">
+            <div
+                style="flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;">
+                <div class="logo-placeholder">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <h1>EduBook</h1>
+                <h2>University Events Marketplace</h2>
+                <p
+                    style="margin-top: 4rem; color: var(--color-texto-gris); font-size: 1.4rem; display: flex; align-items: center; gap: 12px; background: rgba(0,0,0,0.3); padding: 10px 20px; border-radius: 30px;">
+                    <i class="fa-solid fa-arrow-right-long" style="color: var(--color-acento);"></i> Press Right Arrow
+                    or Click Next to begin
+                </p>
+            </div>
+        </div>
+
+        <!-- 2. The Team -->
+        <div class="slide" id="slide-2">
+            <h2 class="slide-header">Introduction to the Project</h2>
+            <div class="content">
+                <div class="card" style="text-align: center;">
+                    <h3 style="justify-content: center;"><i class="fa-solid fa-users"></i> The Team</h3>
+                    <div class="team-container">
+                        <div class="team-member">
+                            <img src="https://ui-avatars.com/api/?name=Neil+Andrei&size=250&background=2A5F75&color=fff&font-size=0.33"
+                                alt="Neil Andrei Sarinas" class="team-photo">
+                            <h4>Neil Andrei Sarinas</h4>
+                            <p><i class="fa-solid fa-code"></i> DAW en STUCOM</p>
+                        </div>
+                        <div class="team-member">
+                            <img src="https://ui-avatars.com/api/?name=Elyas+Iqbal&size=250&background=A69B5D&color=0F2D3C&font-size=0.33"
+                                alt="Elyas Iqbal" class="team-photo">
+                            <h4>Elyas Iqbal</h4>
+                            <p><i class="fa-solid fa-code"></i> DAW en STUCOM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 3. What is it? -->
+        <div class="slide" id="slide-3">
+            <h2 class="slide-header">What's the project about?</h2>
+            <div class="content">
+                <div class="card">
+                    <h3><i class="fa-solid fa-circle-question"></i> What is EduBook?</h3>
+                    <p style="color: var(--color-texto); font-size: 1.8rem; line-height: 1.8;">
+                        EduBook is a <span class="highlight">web platform</span> that brings all university events
+                        together in one place.
+                    </p>
+                    <p style="color: var(--color-texto-gris); font-size: 1.5rem; margin-top: 1.5rem;">
+                        It connects universities with students and people who are looking for talks, workshops, and
+                        academic events in Spain.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. Why was it done? -->
+        <div class="slide" id="slide-4">
+            <h2 class="slide-header">Why was the project done?</h2>
+            <div class="content">
+                <div class="card">
+                    <h3><i class="fa-solid fa-magnifying-glass"></i> The Main Problem</h3>
+                    <p style="color: var(--color-texto); font-size: 1.7rem; line-height: 1.8;">
+                        Right now, every university posts their events on different websites and social media.
+                    </p>
+                    <p style="color: var(--color-texto); font-size: 1.7rem; line-height: 1.8; margin-top: 1.5rem;">
+                        Because the information is everywhere, it is very <span class="highlight">hard for
+                            students</span> to find good events and keep track of them.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. Motivations -->
+        <div class="slide" id="slide-5">
+            <h2 class="slide-header">Our Motivations</h2>
+            <div class="content">
+                <div class="card" style="text-align: center;">
+                    <i class="fa-solid fa-heart"
+                        style="font-size: 5rem; color: var(--color-acento); margin-bottom: 2rem;"></i>
+                    <p style="color: var(--color-texto); font-size: 2rem; line-height: 1.8;">
+                        We believe that finding a good academic path <span class="highlight">should be easy</span>.
+                    </p>
+                    <p style="color: var(--color-texto-gris); font-size: 1.6rem; margin-top: 1.5rem;">
+                        We want to <strong style="color: var(--color-texto);">make education accessible</strong> for
+                        everyone, helping students discover their true vocation without stress.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 6. Goals & Objectives -->
+        <div class="slide" id="slide-6">
+            <h2 class="slide-header">Goals & Objectives</h2>
+            <div class="content">
+                <div class="grid-2">
+                    <div class="card">
+                        <h3><i class="fa-solid fa-bullseye"></i> Our Goals</h3>
+                        <ul style="margin-top: 1.5rem;">
+                            <li><i class="fa-solid fa-check-circle"></i> <strong>Centralize:</strong> Put all university
+                                events on one single website.</li>
+                            <br>
+                            <li><i class="fa-solid fa-check-circle"></i> <strong>Connect:</strong> Bring universities
+                                and students closer together.</li>
+                        </ul>
+                    </div>
+                    <div class="card">
+                        <h3><i class="fa-solid fa-list-check"></i> Our Objectives</h3>
+                        <ul style="margin-top: 1.5rem;">
+                            <li><i class="fa-solid fa-check-circle"></i> <strong>Simplify:</strong> Make the
+                                registration process fast and easy for students.</li>
+                            <br>
+                            <li><i class="fa-solid fa-check-circle"></i> <strong>Empower:</strong> Give universities a
+                                dashboard to create and manage their events.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 7. Company Intro -->
+        <div class="slide" id="slide-7">
+            <h2 class="slide-header">The Company</h2>
+            <div class="content" style="flex-direction: row; gap: 2.5rem;">
+                <div class="card"
+                    style="flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2.5rem;">
+                    <i class="fa-solid fa-rocket"
+                        style="font-size: 3.5rem; color: var(--color-acento); margin-bottom: 1.5rem;"></i>
+                    <h3 style="justify-content: center;">Mission</h3>
+                    <p style="color: var(--color-texto); font-size: 1.3rem; margin-bottom: 1rem;">To group all academic
+                        events in one place, connecting universities with students easily.</p>
+                    <p style="color: var(--color-texto-gris); font-size: 1.1rem;">We want to remove all the barriers
+                        that stop students from finding educational opportunities.</p>
+                </div>
+                <div class="card"
+                    style="flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2.5rem;">
+                    <i class="fa-solid fa-eye"
+                        style="font-size: 3.5rem; color: var(--color-acento); margin-bottom: 1.5rem;"></i>
+                    <h3 style="justify-content: center;">Vision</h3>
+                    <p style="color: var(--color-texto); font-size: 1.3rem; margin-bottom: 1rem;">To become the number
+                        one platform for educational events in Spain.</p>
+                    <p style="color: var(--color-texto-gris); font-size: 1.1rem;">We see a future where every student
+                        has immediate access to find their true academic path.</p>
+                </div>
+                <div class="card"
+                    style="flex: 1; text-align: center; height: 100%; display: flex; flex-direction: column; justify-content: flex-start; padding: 2.5rem;">
+                    <i class="fa-solid fa-star"
+                        style="font-size: 3.5rem; color: var(--color-acento); margin-bottom: 1.5rem;"></i>
+                    <h3 style="justify-content: center;">Values</h3>
+                    <p style="color: var(--color-texto); font-size: 1.3rem; margin-bottom: 1rem;">Accessibility,
+                        Innovation, and building a great Community.</p>
+                    <p style="color: var(--color-texto-gris); font-size: 1.1rem;">We use modern technology to make
+                        education open to all and create a strong student network.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 8. Interactive Tour -->
+        <div class="slide" id="slide-8" style="padding: 2rem 4rem;">
+            <h2 class="slide-header"
+                style="display: flex; justify-content: space-between; width: 100%; align-items: center; margin-bottom: 1.5rem;">
+                <span>Website Tour</span>
+                <span
+                    style="font-size: 1.4rem; color: var(--color-texto); font-weight: bold; background: var(--color-acento); padding: 5px 15px; border-radius: 20px; color: var(--color-fondo);">
+                    <i class="fa-solid fa-mouse-pointer"></i> Live Demo
+                </span>
+            </h2>
+            <div class="iframe-container">
+                <div class="iframe-overlay" id="iframeOverlay">
+                    <h3 style="color: var(--color-texto); font-size: 3rem; margin-bottom: 1.5rem;">Let's see it in
+                        action!</h3>
+                    <p style="color: var(--color-texto-gris); margin-bottom: 2.5rem; font-size: 1.4rem;">
+                        Click the button below to use our website directly from here.
+                    </p>
+                    <button class="btn-launch" onclick="launchDemo()">
+                        <i class="fa-solid fa-play"></i> Start Website Tour
+                    </button>
+                </div>
+                <iframe id="websiteIframe" src="" data-src="../src/views/login.php" title="EduBook Website"></iframe>
+            </div>
+        </div>
+
+        <!-- 9. Market Analysis (Benchmarking) -->
+        <div class="slide" id="slide-9">
+            <h2 class="slide-header">Market Analysis (Benchmarking)</h2>
+            <div class="content" style="align-items: stretch;">
+                <p style="color: var(--color-texto); text-align: center; font-size: 1.6rem; margin-bottom: 1.5rem;">We
+                    took the best ideas from these famous platforms:</p>
+
+                <div class="grid-2" style="max-width: 100%; gap: 2rem; grid-template-columns: repeat(3, 1fr);">
+                    <div class="card" style="padding: 2rem;">
+                        <h3 style="margin-bottom: 1rem;"><i class="fa-regular fa-calendar-check"></i> Eventbrite</h3>
+                        <p style="color: var(--color-texto-gris); font-size: 1.4rem;">We liked how they manage events
+                            and tickets professionally.</p>
+                    </div>
+                    <div class="card" style="padding: 2rem;">
+                        <h3 style="margin-bottom: 1rem;"><i class="fa-solid fa-people-group"></i> Meetup</h3>
+                        <p style="color: var(--color-texto-gris); font-size: 1.4rem;">We liked their strong community
+                            focus and user recommendations.</p>
+                    </div>
+                    <div class="card" style="padding: 2rem; text-align: center;">
+                        <h3 style="justify-content: center; margin-bottom: 1rem;"><i
+                                class="fa-solid fa-magnifying-glass-location"></i> Booking.com</h3>
+                        <p style="color: var(--color-texto-gris); font-size: 1.4rem;">We liked their filters and how
+                            easy it is to find what you want.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 10. Technical Explanation 1 - Design -->
+        <div class="slide" id="slide-10">
+            <h2 class="slide-header">Technical Explanation (I)</h2>
+            <div class="content">
+                <div class="card">
+                    <p style="color: var(--color-texto); font-size: 1.8rem; line-height: 1.8; margin-bottom: 2rem;">
+                        <strong>In order to</strong> develop the front-end, we worked on the structure of our page
+                        carefully.
+                    </p>
+                    <p style="color: var(--color-texto); font-size: 1.8rem; line-height: 1.8;">
+                        <strong>Firstly</strong>, Figma, <strong>which is</strong> a designing tool similar to Wix,
+                        <strong class="highlight">was used to</strong> design the first prototype of the web.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 11. Technical Explanation 2 - Stack -->
+        <div class="slide" id="slide-11">
+            <h2 class="slide-header">Technical Explanation (II)</h2>
+            <div class="content">
+                <div class="grid-2">
+                    <div class="card" style="padding: 2.5rem;">
+                        <h3><i class="fa-brands fa-html5"></i> Front-End</h3>
+                        <ul style="font-size: 1.4rem;">
+                            <li><i class="fa-solid fa-code"></i> HTML5 for the structure</li>
+                            <li><i class="fa-brands fa-css3-alt"></i> Vanilla CSS for styles</li>
+                            <li><i class="fa-brands fa-js"></i> JavaScript for animations</li>
+                        </ul>
+                    </div>
+                    <div class="card" style="padding: 2.5rem;">
+                        <h3><i class="fa-solid fa-server"></i> Back-End & Data</h3>
+                        <ul style="font-size: 1.4rem;">
+                            <li><i class="fa-brands fa-php"></i> PHP (MVC Architecture)</li>
+                            <li><i class="fa-solid fa-shield-halved"></i> Role system (Explorador/Manager)</li>
+                            <li><i class="fa-solid fa-file-code"></i> Local JSON files for data</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="card" style="margin-top: 2rem; padding: 1.5rem; max-width: 100%; text-align: center;">
+                    <p style="color: var(--color-texto); font-size: 1.5rem;">
+                        <strong>Afterwards</strong>, coding <strong>was written by means of</strong> using Visual Studio
+                        Code.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- 12. Technical Explanation 3 - Advanced Features (n8n & AI) -->
+        <div class="slide" id="slide-12">
+            <h2 class="slide-header">Advanced Features (III)</h2>
+            <div class="content">
+                <div class="card" style="max-width: 1000px; text-align: center;">
+                    <h3 style="margin-bottom: 1.5rem; justify-content: center;"><i class="fa-solid fa-bolt"></i> Extra
+                        Technologies</h3>
+                    <p style="color: var(--color-texto); font-size: 1.6rem; line-height: 1.6; margin-bottom: 2rem;">
+                        Instead of a normal database, we used a modern <span class="highlight">Serverless system</span>.
+                    </p>
+
+                    <div style="text-align: center; margin-bottom: 2.5rem;">
+                        <span class="tech-badge"><i class="fa-solid fa-network-wired"></i> n8n Webhooks</span>
+                        <span class="tech-badge"><i class="fa-solid fa-database"></i> Supabase</span>
+                        <span class="tech-badge"><i class="fa-solid fa-robot"></i> AI Chatbot</span>
+                    </div>
+
+                    <ul style="font-size: 1.4rem; text-align: left; display: inline-block;">
+                        <li><i class="fa-solid fa-key"></i> We used <strong>n8n and Supabase</strong> to do the Login
+                            and Register securely.</li>
+                        <li><i class="fa-solid fa-message"></i> We added an <strong>AI Chatbot</strong> on our website
+                            that can answer any questions.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 13. Conclusion - Results & Implications -->
+        <div class="slide" id="slide-13">
+            <h2 class="slide-header">Conclusion to the Project</h2>
+            <div class="content">
+                <div class="card">
+                    <p style="color: var(--color-texto); font-size: 1.8rem; margin-bottom: 2.5rem;">
+                        <strong class="highlight">Overall, we conclude that</strong> EduBook is a great solution for the
+                        university events problem.
+                    </p>
+                    <ul>
+                        <li><i class="fa-solid fa-check"></i> We successfully built a working website with advanced
+                            tools like n8n and AI.</li>
+                        <br>
+                        <li><i class="fa-solid fa-check"></i> This website will make life much easier for students
+                            looking for orientation.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 14. Conclusion - Teamwork & Challenges -->
+        <div class="slide" id="slide-14">
+            <h2 class="slide-header">Teamwork & Difficulties</h2>
+            <div class="content">
+                <div class="card">
+                    <ul>
+                        <li><i class="fa-solid fa-people-carry-box"></i> <strong>How we worked as a team:</strong>
+                            <p
+                                style="font-size: 1.4rem; color: var(--color-texto-gris); margin-top: 1rem; margin-left: -3rem;">
+                                We communicated every day. One focused more on the design (Front-end) and the other on
+                                the PHP logic (Back-end).</p>
+                        </li>
+                        <br><br>
+                        <li><i class="fa-solid fa-triangle-exclamation"></i> <strong>Challenges & Difficulties:</strong>
+                            <p
+                                style="font-size: 1.4rem; color: var(--color-texto-gris); margin-top: 1rem; margin-left: -3rem;">
+                                Connecting PHP sessions with n8n workflows and JSON files was very difficult, but we
+                                learned a lot and made it work.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <!-- 15. Conclusion - Future -->
+        <div class="slide" id="slide-15">
+            <h2 class="slide-header">Suggestions for the future</h2>
+            <div class="content" style="flex-direction: row; gap: 3rem;">
+                <div style="flex: 1; display: flex; align-items: center; justify-content: center;">
+                    <img src="scum.png" alt="Scrum Framework"
+                        style="width: 100%; border-radius: 15px; border: 3px solid var(--color-acento); box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+                </div>
+                <div class="card" style="flex: 1; text-align: left;">
+                    <h3 style="margin-bottom: 2rem;"><i class="fa-solid fa-people-arrows"></i> For future teamwork, we
+                        suggest:</h3>
+                    <ul style="margin-top: 1.5rem;">
+                        <li><i class="fa-solid fa-arrow-right"></i> Planning our time better using agile methods like
+                            Scrum.</li>
+                        <br>
+                        <li><i class="fa-solid fa-arrow-right"></i> Testing the code together more often to avoid bugs.
+                        </li>
+                        <br>
+                        <li><i class="fa-solid fa-arrow-right"></i> Learning more about new tools like n8n before
+                            starting to code.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- Controls -->
+        <div class="controls">
+            <span id="slideCounter"
+                style="color: var(--color-texto-gris); display: flex; align-items: center; font-size: 1.4rem; font-weight: bold; margin-right: 10px;">1/15</span>
+            <button class="btn" id="prevBtn" onclick="changeSlide(-1)" disabled>
+                <i class="fa-solid fa-chevron-left"></i> Prev
+            </button>
+            <button class="btn" id="nextBtn" onclick="changeSlide(1)">
+                Next <i class="fa-solid fa-chevron-right"></i>
+            </button>
+        </div>
+
+        <!-- Progress Bar -->
+        <div class="progress-bar-container">
+            <div class="progress-bar" id="progressBar" style="width: 6.66%;"></div>
+        </div>
+
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const slides = document.querySelectorAll('.slide');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+        const progressBar = document.getElementById('progressBar');
+        const slideCounter = document.getElementById('slideCounter');
+
+        // Iframe integration
+        const iframe = document.getElementById('websiteIframe');
+        const iframeOverlay = document.getElementById('iframeOverlay');
+        let isDemoLaunched = false;
+
+        function updateSlides() {
+            slides.forEach((slide, index) => {
+                slide.classList.remove('active', 'previous');
+                if (index === currentSlide) {
+                    slide.classList.add('active');
+                } else if (index < currentSlide) {
+                    slide.classList.add('previous');
+                }
+            });
+
+            // Update buttons
+            prevBtn.disabled = currentSlide === 0;
+            nextBtn.disabled = currentSlide === slides.length - 1;
+
+            // Update progress bar
+            const progress = ((currentSlide + 1) / slides.length) * 100;
+            progressBar.style.width = progress + '%';
+
+            // Update counter
+            slideCounter.innerText = `${currentSlide + 1}/${slides.length}`;
+        }
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= slides.length) currentSlide = slides.length - 1;
+            updateSlides();
+        }
+
+        function launchDemo() {
+            if (!isDemoLaunched) {
+                const url = iframe.getAttribute('data-src');
+                iframe.src = url;
+                isDemoLaunched = true;
+            }
+            iframeOverlay.classList.add('hidden');
+        }
+
+        document.addEventListener('keydown', (e) => {
+            if (document.activeElement === iframe) return;
+
+            if (e.key === 'ArrowRight') {
+                changeSlide(1);
+            } else if (e.key === 'ArrowLeft') {
+                changeSlide(-1);
+            }
+        });
+    </script>
+</body>
+
+</html>
